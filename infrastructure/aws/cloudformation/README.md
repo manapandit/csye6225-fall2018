@@ -1,7 +1,7 @@
 # Programming Infrastructure using Cloud Formation 
 ------------------------------------------------------------------------------------------------------------------------------------------
 # Description: 
-     Designing and creating a IPv4 VPC with public and Private subnets, Internet Gateway and Route tables using AWS cloud formation by          programming json templates.
+   Designing and creating a IPv4 VPC with public and Private subnets, Internet Gateway and Route tables using AWS cloud formation by          programming json templates.
 ------------------------------------------------------------------------------------------------------------------------------------------
 # Cloud Formation Networking JSON file
  1. Created a Stack containing Parameters and Resources.
