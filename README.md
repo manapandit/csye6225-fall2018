@@ -15,9 +15,16 @@
 ##### 4 Spring-Boot-Starter-Security
 
 # Build and Deploying Application Locally
-
-
+##### IDE : IntelliJ
+##### Database: MariaDB
+##### Rest API
+##### API Testing Tool: Postman
+##### Junit Test
+##### Regex 
 
 # Link to TravisCI build for the project
 https://travis-ci.com/paduthol-jishnu/csye6225-fall2018
+https://travis-ci.com/sharmadhruv/csye6225-fall2018
+https://travis-ci.com/manapandit/csye6225-fall2018
+https://travis-ci.com/Rini2511/csye6225-fall2018
 
