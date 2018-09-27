@@ -54,6 +54,14 @@
         </dependency>
 
 
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.3m</version>
+        </dependency>
+
+
+
 
 
 
@@ -63,7 +71,11 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-    </dependencies>
+
+        </dependencies>
+
+   
+
 
     <build>
         <plugins>
