@@ -1,0 +1,64 @@
+[
+                {
+                    "ParameterKey": "SubnetA",
+                    "ParameterValue": "10.0.1.0/24"
+                },
+                {
+                    "ParameterKey": "SubnetB",
+                    "ParameterValue": "10.0.2.0/24"
+                },
+                {
+                    "ParameterKey": "SubnetC",
+                    "ParameterValue": "10.0.3.0/24"
+                },
+
+                {
+                    "ParameterKey": "SubnetD",
+                    "ParameterValue": "10.0.4.0/24"
+                },
+
+                {
+                    "ParameterKey": "SubnetE",
+                    "ParameterValue": "10.0.5.0/24"
+                },
+
+                {
+                    "ParameterKey": "SubnetF",
+                    "ParameterValue": "10.0.6.0/24"
+                },
+
+                
+                {
+                    "ParameterKey": "VPCCIDR",
+                    "ParameterValue": "10.0.0.0/16"
+                },
+                {
+                    "ParameterKey": "ZoneA",
+                    "ParameterValue": "us-east-1a"
+                },
+                {
+                    "ParameterKey": "ZoneB",
+                    "ParameterValue": "us-east-1b"
+                },
+                {
+                    "ParameterKey": "Route",
+                    "ParameterValue": "0.0.0.0/0"
+                },
+                {
+                    "ParameterKey": "ZoneC",
+                    "ParameterValue": "us-east-1c"
+                },
+
+                {
+                    "ParameterKey": "ZoneD",
+                    "ParameterValue": "us-east-1d"
+                },
+                {
+                    "ParameterKey": "ZoneE",
+                    "ParameterValue": "us-east-1e"
+                },
+                {
+                    "ParameterKey": "ZoneF",
+                    "ParameterValue": "us-east-1f"
+                }
+            ]
