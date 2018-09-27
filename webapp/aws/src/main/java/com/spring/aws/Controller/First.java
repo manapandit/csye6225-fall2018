@@ -7,13 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.mindrot.jbcrypt.BCrypt;
-
-
 import javax.persistence.GeneratedValue;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 
 @RestController
 @RequestMapping("/")
@@ -24,13 +23,11 @@ public class First {
         return new ResponseEntity<>(LocalDateTime.now(), HttpStatus.OK);
     }
 
-//    @GetMapping("office2")
-//    public ResponseEntity<?> enterOffice2(){
-//        return new ResponseEntity<>("you are inside office two", HttpStatus.OK);
-//    }
+
 
     @Autowired
     UserRepository userRepository;
+
 
     @PostMapping(value = "user/register", produces = "application/json")
     public String createUser(@Valid @RequestBody UserRegistration userRegistration) {

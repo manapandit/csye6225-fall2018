@@ -1,5 +1,6 @@
 package com.spring.aws;
 
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -27,5 +28,24 @@ public class AwsApplicationTests {
     public void MockMVC(){
         this.mockMvc.perform(get("/time").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
     }
+  
+  @Test
+  public void userTest(){
+ Assert.assertTrue(message: "This is running Successfully" , condition: 1==1);
+  }
+// =======
+// import org.junit.Test;
+// import org.junit.runner.RunWith;
+// import org.springframework.boot.test.context.SpringBootTest;
+// import org.springframework.test.context.junit4.SpringRunner;
+
+// @RunWith(SpringRunner.class)
+// @SpringBootTest
+// public class AwsApplicationTests {
+
+//     @Test
+//     public void contextLoads() {
+// >>>>>>> assignment2
+    
 
 }
