@@ -95,7 +95,22 @@
     	    "EnableDnsSupport" : "true",
     	    "EnableDnsHostnames" : "true",
             "InstanceTenancy" : "default",
-            "Tags" : [ {"Key" : "Demo_Vpc", "Value" : "project"} ]
+            "Tags": [
+              {
+                "Key": "Name",
+                "Value": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "AWS::StackName"
+                      },
+                      "-csye6225-myVpc"
+                    ]
+                  ]
+                }
+              }
+            ]
          }
       },
 
@@ -104,7 +119,23 @@
          "Properties" : {
             "VpcId" : { "Ref" : "myVPC" },
             "CidrBlock" : {"Ref":"SubnetA"},
-            "AvailabilityZone" : {"Ref": "ZoneA"}
+            "AvailabilityZone" : {"Ref": "ZoneA"},
+            "Tags": [
+              {
+                "Key": "Name",
+                "Value": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "AWS::StackName"
+                      },
+                      "-csye6225-Sub1"
+                    ]
+                  ]
+                }
+              }
+            ]
          }
       },
 
@@ -113,7 +144,23 @@
         "Properties" : {
            "VpcId" : { "Ref" : "myVPC" },
            "CidrBlock" : {"Ref":"SubnetB"},
-           "AvailabilityZone" : {"Ref": "ZoneB"}
+           "AvailabilityZone" : {"Ref": "ZoneB"},
+           "Tags": [
+            {
+              "Key": "Name",
+              "Value": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Ref": "AWS::StackName"
+                    },
+                    "-csye6225-Sub2"
+                  ]
+                ]
+              }
+            }
+          ]
         }
      },
 
@@ -122,7 +169,23 @@
         "Properties" : {
            "VpcId" : { "Ref" : "myVPC" },
            "CidrBlock" :{"Ref":"SubnetC"},
-           "AvailabilityZone" : {"Ref": "ZoneC"}
+           "AvailabilityZone" : {"Ref": "ZoneC"},
+           "Tags": [
+            {
+              "Key": "Name",
+              "Value": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Ref": "AWS::StackName"
+                    },
+                    "-csye6225-Sub3"
+                  ]
+                ]
+              }
+            }
+          ]
         }
      },
 
@@ -131,7 +194,23 @@
       "Properties" : {
          "VpcId" : { "Ref" : "myVPC" },
          "CidrBlock" :{"Ref":"SubnetD"},
-         "AvailabilityZone" : {"Ref": "ZoneD"}
+         "AvailabilityZone" : {"Ref": "ZoneD"},
+         "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "AWS::StackName"
+                  },
+                  "-csye6225-Sub4"
+                ]
+              ]
+            }
+          }
+        ]
       }
      },
 
@@ -140,7 +219,23 @@
       "Properties" : {
          "VpcId" : { "Ref" : "myVPC" },
          "CidrBlock" :{"Ref":"SubnetE"},
-         "AvailabilityZone" : {"Ref": "ZoneE"}
+         "AvailabilityZone" : {"Ref": "ZoneE"},
+         "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "AWS::StackName"
+                  },
+                  "-csye6225-Sub5"
+                ]
+              ]
+            }
+          }
+        ]
        }
       },
 
@@ -149,7 +244,23 @@
         "Properties" : {
            "VpcId" : { "Ref" : "myVPC" },
            "CidrBlock" :{"Ref":"SubnetF"},
-           "AvailabilityZone" : {"Ref": "ZoneF"}
+           "AvailabilityZone" : {"Ref": "ZoneF"},
+           "Tags": [
+            {
+              "Key": "Name",
+              "Value": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Ref": "AWS::StackName"
+                    },
+                    "-csye6225-Sub6"
+                  ]
+                ]
+              }
+            }
+          ]
         }
      },
 
@@ -158,19 +269,39 @@
    
      "myInternetGateway" : {
         "Type" : "AWS::EC2::InternetGateway"
-     },
-        "AttachGateway" : {
+        },
+
+        
+          "AttachGateway" : {
             "Type" : "AWS::EC2::VPCGatewayAttachment",
             "Properties" : {
                "VpcId" : { "Ref" : "myVPC" },
                "InternetGatewayId" : { "Ref" : "myInternetGateway" }
-            }
-         },
+                    
+                  }
+            },
+         
 
          "myRouteTable" : {
             "Type" : "AWS::EC2::RouteTable",
             "Properties" : {
-               "VpcId" : { "Ref" : "myVPC" }
+               "VpcId" : { "Ref" : "myVPC" },
+               "Tags": [
+                {
+                  "Key": "Name",
+                  "Value": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        {
+                          "Ref": "AWS::StackName"
+                        },
+                        "-csye6225-RouteTable"
+                      ]
+                    ]
+                  }
+                }
+              ]
             }
          },
 
