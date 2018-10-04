@@ -1,0 +1,342 @@
+{
+   "AWSTemplateFormatVersion" : "2010-09-09",
+
+   "Parameters" : {
+    "VPCCIDR" : {
+      "Type" : "String",
+      "Description" : "IP Address range for the VPN connected VPC",
+      "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
+      "ConstraintDescription": "must be a valid IP CIDR range of the form x.x.x.x/x."
+    },
+
+    "SubnetA" : {
+      "Type" : "String",
+      "Description" : "IP Address range for the VPN connected VPC",
+      "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
+      "ConstraintDescription": "must be a valid IP CIDR range of the form x.x.x.x/x."
+    },
+
+    "SubnetB" : {
+      "Type" : "String",
+      "Description" : "IP Address range for the VPN connected VPC",
+      "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
+      "ConstraintDescription": "must be a valid IP CIDR range of the form x.x.x.x/x."
+    },
+
+    "SubnetC" : {
+      "Type" : "String",
+      "Description" : "IP Address range for the VPN connected VPC",
+      "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
+      "ConstraintDescription": "must be a valid IP CIDR range of the form x.x.x.x/x."
+    },
+
+    "SubnetD" : {
+      "Type" : "String",
+      "Description" : "IP Address range for the VPN connected VPC",
+      "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
+      "ConstraintDescription": "must be a valid IP CIDR range of the form x.x.x.x/x."
+    },
+
+    "SubnetE" : {
+      "Type" : "String",
+      "Description" : "IP Address range for the VPN connected VPC",
+      "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
+      "ConstraintDescription": "must be a valid IP CIDR range of the form x.x.x.x/x."
+    },
+
+    "SubnetF" : {
+      "Type" : "String",
+      "Description" : "IP Address range for the VPN connected VPC",
+      "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
+      "ConstraintDescription": "must be a valid IP CIDR range of the form x.x.x.x/x."
+    },
+
+    "ZoneA" : {
+      "Type" : "String",
+      "Description" : "IP Address range for the VPN connected VPC"
+    },
+
+    "ZoneB" : {
+      "Type" : "String",
+      "Description" : "IP Address range for the VPN connected VPC"
+    },
+
+    "ZoneC" : {
+      "Type" : "String",
+      "Description" : "IP Address range for the VPN connected VPC"
+    },
+
+    "ZoneD" : {
+      "Type" : "String",
+      "Description" : "IP Address range for the VPN connected VPC"
+    },
+
+    "ZoneE" : {
+      "Type" : "String",
+      "Description" : "IP Address range for the VPN connected VPC"
+    },
+
+    "ZoneF" : {
+      "Type" : "String",
+      "Description" : "IP Address range for the VPN connected VPC"
+    },
+
+    "Route" : {
+      "Type" : "String",
+      "Description" : "IP Address range for the VPN connected VPC"
+    }
+    },
+
+   "Resources" : {
+      "myVPC" : {
+         "Type" : "AWS::EC2::VPC",
+         "Properties" : {
+            "CidrBlock" : {"Ref" :"VPCCIDR"},
+    	    "EnableDnsSupport" : "true",
+    	    "EnableDnsHostnames" : "true",
+            "InstanceTenancy" : "default",
+            "Tags": [
+              {
+                "Key": "Name",
+                "Value": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "AWS::StackName"
+                      },
+                      "-csye6225-myVpc"
+                    ]
+                  ]
+                }
+              }
+            ]
+         }
+      },
+
+      "Subnet1" : {
+         "Type" : "AWS::EC2::Subnet",
+         "Properties" : {
+            "VpcId" : { "Ref" : "myVPC" },
+            "CidrBlock" : {"Ref":"SubnetA"},
+            "AvailabilityZone" : {"Ref": "ZoneA"},
+            "Tags": [
+              {
+                "Key": "Name",
+                "Value": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "AWS::StackName"
+                      },
+                      "-csye6225-Sub1"
+                    ]
+                  ]
+                }
+              }
+            ]
+         }
+      },
+
+      "Subnet2" : {
+        "Type" : "AWS::EC2::Subnet",
+        "Properties" : {
+           "VpcId" : { "Ref" : "myVPC" },
+           "CidrBlock" : {"Ref":"SubnetB"},
+           "AvailabilityZone" : {"Ref": "ZoneB"},
+           "Tags": [
+            {
+              "Key": "Name",
+              "Value": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Ref": "AWS::StackName"
+                    },
+                    "-csye6225-Sub2"
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+     },
+
+     "Subnet3" : {
+        "Type" : "AWS::EC2::Subnet",
+        "Properties" : {
+           "VpcId" : { "Ref" : "myVPC" },
+           "CidrBlock" :{"Ref":"SubnetC"},
+           "AvailabilityZone" : {"Ref": "ZoneC"},
+           "Tags": [
+            {
+              "Key": "Name",
+              "Value": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Ref": "AWS::StackName"
+                    },
+                    "-csye6225-Sub3"
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+     },
+
+     "Subnet4" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+         "VpcId" : { "Ref" : "myVPC" },
+         "CidrBlock" :{"Ref":"SubnetD"},
+         "AvailabilityZone" : {"Ref": "ZoneD"},
+         "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "AWS::StackName"
+                  },
+                  "-csye6225-Sub4"
+                ]
+              ]
+            }
+          }
+        ]
+      }
+     },
+
+     "Subnet5" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+         "VpcId" : { "Ref" : "myVPC" },
+         "CidrBlock" :{"Ref":"SubnetE"},
+         "AvailabilityZone" : {"Ref": "ZoneE"},
+         "Tags": [
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "AWS::StackName"
+                  },
+                  "-csye6225-Sub5"
+                ]
+              ]
+            }
+          }
+        ]
+       }
+      },
+
+      "Subnet6" : {
+        "Type" : "AWS::EC2::Subnet",
+        "Properties" : {
+           "VpcId" : { "Ref" : "myVPC" },
+           "CidrBlock" :{"Ref":"SubnetF"},
+           "AvailabilityZone" : {"Ref": "ZoneF"},
+           "Tags": [
+            {
+              "Key": "Name",
+              "Value": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Ref": "AWS::StackName"
+                    },
+                    "-csye6225-Sub6"
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+     },
+
+     
+
+   
+     "myInternetGateway" : {
+        "Type" : "AWS::EC2::InternetGateway"
+        },
+
+        
+          "AttachGateway" : {
+            "Type" : "AWS::EC2::VPCGatewayAttachment",
+            "Properties" : {
+               "VpcId" : { "Ref" : "myVPC" },
+               "InternetGatewayId" : { "Ref" : "myInternetGateway" }
+                    
+                  }
+            },
+         
+
+         "myRouteTable" : {
+            "Type" : "AWS::EC2::RouteTable",
+            "Properties" : {
+               "VpcId" : { "Ref" : "myVPC" },
+               "Tags": [
+                {
+                  "Key": "Name",
+                  "Value": {
+                    "Fn::Join": [
+                      "",
+                      [
+                        {
+                          "Ref": "AWS::StackName"
+                        },
+                        "-csye6225-RouteTable"
+                      ]
+                    ]
+                  }
+                }
+              ]
+            }
+         },
+
+         "myRoute" : {
+            "Type" : "AWS::EC2::Route",
+            "Properties" : {
+               "RouteTableId" : { "Ref" : "myRouteTable" },
+               "DestinationCidrBlock" : {"Ref": "Route"},
+               "GatewayId" : { "Ref" : "myInternetGateway" }
+            }
+         },
+         
+         "mySubnetRouteTableAssociation1" : {
+            "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties" : {
+               "SubnetId" : { "Ref" : "Subnet1" },
+               "RouteTableId" : { "Ref" : "myRouteTable" }
+            }
+         },
+
+         "mySubnetRouteTableAssociation2" : {
+            "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties" : {
+               "SubnetId" : { "Ref" : "Subnet2" },
+               "RouteTableId" : { "Ref" : "myRouteTable" }
+            }
+         },
+
+         "mySubnetRouteTableAssociation3" : {
+            "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties" : {
+               "SubnetId" : { "Ref" : "Subnet3" },
+               "RouteTableId" : { "Ref" : "myRouteTable" }
+            }
+         }
+     
+   }
+}
