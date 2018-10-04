@@ -21,7 +21,7 @@ else
   echo "Deletion in Progress....."
 fi
 
-Complete=$(aws cloudformation wait stack-delete-complete --stack-name $StackName)
+Complete=$(aws cloudformation wait stack-delete-complete --stack-name $Stack)
 if [[ -z "$Complete" ]]
 then
   echo "$Stack stack is deleted successfully"
