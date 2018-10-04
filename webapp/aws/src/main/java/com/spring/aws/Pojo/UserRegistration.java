@@ -13,28 +13,46 @@ import java.io.Serializable;
 @Table(name = "UserDetails")
 @EntityListeners(AuditingEntityListener.class)
 public class UserRegistration implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+
+
+    public UserRegistration()
+    {
+
+    }
+
+
+
+    public UserRegistration(String email, String password){
+
+        this.email=email;
+        this.password=password;
+
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @Column(name = "uId")
+    private Long uId;
 
-    @NotBlank
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @NotBlank
+
+    @Column(name = "password", nullable = false)
     private String password;
 
-//    public UserRegistration(@NotBlank String email, @NotBlank String password) {
-//        this.email = email;
-//        this.password = password;
-//    }
-
-    public int getId() {
-        return id;
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public Long getuId() {
+        return uId;
+    }
+
+    public void setuId(Long uId) {
+        this.uId = uId;
     }
 
     public String getEmail() {
