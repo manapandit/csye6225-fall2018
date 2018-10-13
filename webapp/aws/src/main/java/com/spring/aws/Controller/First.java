@@ -10,18 +10,41 @@ import org.mindrot.jbcrypt.BCrypt;
 
 
 import javax.persistence.GeneratedValue;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @RestController
-@RequestMapping("/")
 public class First {
 
+
+//    public ResponseEntity<?> time(){
+//        return new ResponseEntity<>(LocalDateTime.now(), HttpStatus.OK);
+//    }
     @GetMapping("time")
-    public ResponseEntity<?> time(){
-        return new ResponseEntity<>(LocalDateTime.now(), HttpStatus.OK);
+    public String greeting(HttpServletRequest request, HttpServletResponse response)
+    {
+
+
+
+        String check = request.getHeader("Authorization");
+
+        System.out.println("" +check);
+
+        if(check==null)
+        {
+            //  response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return  "You are not logged in" ;
+
+        }
+        // check if the user is in the system
+
+
+        return "" +LocalDateTime.now()  + " " +response.getStatus();
+
     }
 
 //    @GetMapping("office2")
@@ -32,17 +55,17 @@ public class First {
     @Autowired
     UserRepository userRepository;
 
-    @PostMapping(value = "user/register", produces = "application/json")
-    public String createUser(@Valid @RequestBody UserRegistration userRegistration) {
-        if(!validate(userRegistration.getEmail())){
+    @RequestMapping(value="/user/register" ,method=RequestMethod.POST,produces = "application/json")
+    public String addUser(@RequestBody UserRegistration member) {
+        if(!validate(member.getEmail())){
             return "Invalid email address, try again!!";
         }
-        if(userRepository.findUserRegistrationByEmail(userRegistration.getEmail()) == null) {
-            String password = userRegistration.getPassword();
+        if(userRepository.findUserRegistrationByEmail(member.getEmail()) == null) {
+            String password = member.getPassword();
             String salt = BCrypt.gensalt(12);
             String hashed_password = BCrypt.hashpw(password, salt);
-            userRegistration.setPassword(hashed_password);
-            userRepository.save(userRegistration);
+            member.setPassword(hashed_password);
+            userRepository.save(member);
             return "User created Successfully";
 
         }
