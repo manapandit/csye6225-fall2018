@@ -262,6 +262,17 @@ read route_Table_Name
 
 aws ec2 create-tags --resources $route_Table_Id --tags "Key=Name,Value=$route_Table_Name" 2>&1
 
+#Creating Private Route table for VPC ****************************************************************************************************
+echo "Creating Route Table.."
+route_Table_Id1=$(aws ec2 create-route-table --vpc-id $vpc_Id \
+--query 'RouteTable.{RouteTableId:RouteTableId}' --output text 2>&1)
+
+#Route Table Name
+echo "Enter Route Table Name: "
+read route_Table_Name1
+
+aws ec2 create-tags --resources $route_Table_Id1 --tags "Key=Name,Value=$route_Table_Name1" 2>&1
+
 if [ $? -ne "0" ]
 then 
  echo "Route Table Creation Request Failed"
@@ -294,6 +305,12 @@ route_subnet1=$(aws ec2 associate-route-table --subnet-id $subnet_Id1 --route-ta
 route_subnet2=$(aws ec2 associate-route-table --subnet-id $subnet_Id2 --route-table-id $route_Table_Id 2>&1)
 
 route_subnet3=$(aws ec2 associate-route-table --subnet-id $subnet_Id3 --route-table-id $route_Table_Id 2>&1)
+
+route_subnet4=$(aws ec2 associate-route-table --subnet-id $priv_Subnet_Id1 --route-table-id $route_Table_Id1 2>&1)
+
+route_subnet5=$(aws ec2 associate-route-table --subnet-id $priv_Subnet_Id2 --route-table-id $route_Table_Id1 2>&1)
+
+route_subnet6=$(aws ec2 associate-route-table --subnet-id $priv_Subnet_Id3 --route-table-id $route_Table_Id1 2>&1)
 
 if [ $? -ne "0" ]
 then 
