@@ -10,16 +10,16 @@ import java.io.Serializable;
 
 
 @Entity
-@Table(name = "UserDetails")
+@Table(name = "user_details")
 @EntityListeners(AuditingEntityListener.class)
 public class UserRegistration implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-    @NotBlank
     private String email;
+
+
+
 
     @NotBlank
     private String password;
@@ -29,13 +29,7 @@ public class UserRegistration implements Serializable {
 //        this.password = password;
 //    }
 
-    public int getId() {
-        return id;
-    }
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getEmail() {
         return email;
