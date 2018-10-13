@@ -23,4 +23,14 @@
 2. Read the Stack name and process the Deletion progress.
 3. Check on the AWS console if the Stack is deleted.
 ------------------------------------------------------------------------------------------------------------------------------------------
-
+# Cloud Formation Create Application Stack script file
+1. Create new stack and extract details from previously created stack in networking JSON file.
+2. Get subnet Ids, VPC Id Hosted Zone paramteres like ID, nameRead the Stack name and process the Deletion progress.
+3. Complete generating new stack.
+4. Wait until the Stack is ready and check on the AWS console if the Stack is created.
+------------------------------------------------------------------------------------------------------------------------------------------
+# Cloud Formation Application JSON file
+1. Create EC2 instance and provide required parameters like key pair, DB user details.
+2. Create Security groups for DB server and web server.
+3. Check on the AWS console if EC2 instance is up with all configured paramters.
+----------------------------------------------------------------------------------------------------------------------------------------
