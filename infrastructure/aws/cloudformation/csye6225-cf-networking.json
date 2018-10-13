@@ -305,6 +305,29 @@
             }
          },
 
+         "myPrivateRouteTable" : {
+          "Type" : "AWS::EC2::RouteTable",
+          "Properties" : {
+             "VpcId" : { "Ref" : "myVPC" },
+             "Tags": [
+              {
+                "Key": "Name",
+                "Value": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Ref": "AWS::StackName"
+                      },
+                      "-csye6225-RouteTable2"
+                    ]
+                  ]
+                }
+              }
+            ]
+          }
+       },
+
          "myRoute" : {
             "Type" : "AWS::EC2::Route",
             "Properties" : {
@@ -336,7 +359,31 @@
                "SubnetId" : { "Ref" : "Subnet3" },
                "RouteTableId" : { "Ref" : "myRouteTable" }
             }
-         }
+         },
+
+         "mySubnetRouteTableAssociation4" : {
+          "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+          "Properties" : {
+             "SubnetId" : { "Ref" : "Subnet4" },
+             "RouteTableId" : { "Ref" : "myPrivateRouteTable" }
+          }
+       },
+
+       "mySubnetRouteTableAssociation5" : {
+        "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+        "Properties" : {
+           "SubnetId" : { "Ref" : "Subnet5" },
+           "RouteTableId" : { "Ref" : "myPrivateRouteTable" }
+        }
+     },
+
+     "mySubnetRouteTableAssociation6" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+         "SubnetId" : { "Ref" : "Subnet6" },
+         "RouteTableId" : { "Ref" : "myPrivateRouteTable" }
+      }
+   }
      
    }
 }
