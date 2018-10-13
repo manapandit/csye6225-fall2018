@@ -14,16 +14,144 @@
          "Type": "String"
          },
  
-         "mySubnetId": {
-             "Description": "VPC SubnetId",
+         "mySubnetId1": {
+             "Description": "VPC SubnetId1",
              "Type": "String"
          },
+
+         "mySubnetId4": {
+            "Description": "VPC SubnetId4",
+            "Type": "String"
+          },
+
+          "mySubnetId5": {
+            "Description": "VPC SubnetId5",
+            "Type": "String"
+          },
  
          "myHostedZone" : {
              "Type" : "String",
              "Description" : "The DNS name of an existing Amazon Route 53 hosted zone"
-         }
+         },
+
+         "DBName": {
+            "Default": "csye6225",
+            "Description" : "The database name",
+            "Type": "String",
+            "MinLength": "1",
+            "MaxLength": "64",
+            "AllowedPattern" : "[a-zA-Z][a-zA-Z0-9]*",
+            "ConstraintDescription" : "must begin with a letter and contain only alphanumeric characters."
+          },
+      
+          "DBUser": {
+            "Default": "csye6225master",
+            "NoEcho": "true",
+            "Description" : "The database admin account username",
+            "Type": "String",
+            "MinLength": "1",
+            "MaxLength": "16",
+            "AllowedPattern" : "[a-zA-Z][a-zA-Z0-9]*",
+            "ConstraintDescription" : "must begin with a letter and contain only alphanumeric characters."
+          },
+      
+          "DBPassword": {
+            "Default": "csye6225password",
+            "NoEcho": "true",
+            "Description" : "The database admin account password",
+            "Type": "String",
+            "MinLength": "1",
+            "MaxLength": "41",
+            "AllowedPattern" : "[a-zA-Z0-9]+",
+            "ConstraintDescription" : "must contain only alphanumeric characters."
+          },
+      
+          "MultiAZ" : {
+            "Description" : "Multi-AZ master database",
+            "Type" : "String",
+            "Default" : "false",
+            "AllowedValues" : [ "true", "false" ],
+            "ConstraintDescription" : "must be true or false."
+          },
+      
+           "DBAllocatedStorage": {
+            "Default": "5",
+            "Description" : "The size of the database (Gb)",
+            "Type": "Number",
+            "MinValue": "5",
+            "MaxValue": "1024",
+            "ConstraintDescription" : "must be between 5 and 1024Gb."
+          },
+      
+          "DBInstanceClass": {
+            "Description" : "The database instance type",
+            "Type": "String",
+            "Default": "db.t2.medium",
+            "AllowedValues" : [ "db.t1.micro", "db.m1.small", "db.t2.medium", "db.m1.large"],
+            "ConstraintDescription" : "must select a valid database instance type."
+          },
+
+          "PublicAccess" : {
+            "Description" : "Accessibility to DBInstance",
+            "Type" : "String",
+            "Default" : "false"
+        },
+        
+
+        "S3Name" : {
+            "Description" : "Name of the S3 Bucket",
+            "Type" : "String"
+        },
+
+        "DBIdentifier" :{
+            "Type" : "String",
+            "Default" : "csye6225-spring2018"
+        },
+
+        "HashKeyElementName" : {
+              "Description" : "HashType PrimaryKey Name",
+              "Type" : "String",
+              "Default" : "id",
+              "AllowedPattern" : "[a-zA-Z0-9]*",
+              "MinLength": "1",
+              "MaxLength": "2048",
+              "ConstraintDescription" : "must contain only alphanumberic characters"
+            },
+
+        "HashKeyElementType" : {
+            "Description" : "HashType PrimaryKey Type",
+            "Type" : "String",
+            "Default" : "S",
+            "AllowedPattern" : "[S|N]",
+            "MinLength": "1",
+            "MaxLength": "1",
+            "ConstraintDescription" : "must be either S or N"
+            },
+
+              "ReadCapacityUnits" : {
+                "Description" : "Provisioned read throughput",
+                "Type" : "Number",
+                "Default" : "5",
+                "MinValue": "5",
+                "MaxValue": "10000",
+                "ConstraintDescription" : "must be between 5 and 10000"
+              },
+          
+              "WriteCapacityUnits" : {
+                "Description" : "Provisioned write throughput",
+                "Type" : "Number",
+                "Default" : "10",
+                "MinValue": "5",
+                "MaxValue": "10000",
+                "ConstraintDescription" : "must be between 5 and 10000"
+              }
     },
+        
+      
+        "Conditions" : {
+          "Is-EC2-VPC"     : {"Fn::Equals" : [{"Ref" : "AWS::Region"}, "us-east-1" ]}
+          },
+    
  
     "Resources" : {
        "MyEC2Instance" : {
@@ -40,7 +168,7 @@
                    "DeviceName" : "/dev/sda1",
                    "Ebs" : {
                       "VolumeType" : "gp2",
-                      "DeleteOnTermination" : "false",
+                      "DeleteOnTermination" : "true",
                       "VolumeSize" : "20"
                       
                    }
@@ -51,7 +179,7 @@
                      "AssociatePublicIpAddress": "true",
                      "DeviceIndex": "0",
                      "GroupSet": [{"Ref": "WebServersSG"}],
-                     "SubnetId": {"Ref": "mySubnetId"}
+                     "SubnetId": {"Ref": "mySubnetId1"}
                  }
              ]
              }
@@ -67,6 +195,14 @@
                "TTL" : "60",
                "ResourceRecords" : ["\"csye-6225-fall2018\""]
              }
+         },
+
+         "DBSubnetGroup" : {
+            "Type" : "AWS::RDS::DBSubnetGroup",
+            "Properties" : {
+               "DBSubnetGroupDescription" : "description",
+               "SubnetIds" : [{"Ref": "mySubnetId4"}, {"Ref": "mySubnetId5"}] 
+            }
          },
        
     
@@ -117,8 +253,53 @@
                  ]
              }
  
-           }
+           },
+
+           "MasterDB" : {
+            "Type" : "AWS::RDS::DBInstance",
+            "Properties" : {
+              "DBName" : { "Ref" : "DBName" },
+              "DBInstanceClass" : { "Ref" : "DBInstanceClass" },
+              "DBInstanceIdentifier" : {"Ref" : "DBIdentifier"},
+              "Engine" : "MySQL",
+              "MasterUsername" : { "Ref" : "DBUser" },
+              "MasterUserPassword" : { "Ref" : "DBPassword" },
+              "MultiAZ" : { "Ref" : "MultiAZ" },
+              "AllocatedStorage" : {"Ref" : "DBAllocatedStorage"},
+              "PubliclyAccessible" : {"Ref" : "PublicAccess"},
+              "DBSubnetGroupName" : {"Ref": "DBSubnetGroup"},
+              "VPCSecurityGroups": { "Fn::If" : [ "Is-EC2-VPC", [ { "Fn::GetAtt": [ "DBSecurityGroup", "GroupId" ] } ], { "Ref" : "AWS::NoValue"}]}
+            },
+            "DeletionPolicy" : "Snapshot"
+          },
+
+          "S3Bucket" : {
+            "Type" : "AWS::S3::Bucket",
+            "Properties" :{
+            "BucketName" : {"Ref" : "S3Name"}
+          }
+        },
+
+        "myDynamoDBTable" : {
+            "Type" : "AWS::DynamoDB::Table",
+            "Properties" : {
+              "AttributeDefinitions": [ { 
+                "AttributeName" : {"Ref" : "HashKeyElementName"},
+                "AttributeType" : {"Ref" : "HashKeyElementType"}
+              } ],
+              "KeySchema": [
+                { "AttributeName": {"Ref" : "HashKeyElementName"}, "KeyType": "HASH" }
+              ],
+              "ProvisionedThroughput" : {
+                "ReadCapacityUnits" : {"Ref" : "ReadCapacityUnits"},
+                "WriteCapacityUnits" : {"Ref" : "WriteCapacityUnits"}
+              },
+
+              "TableName" : "csye6225"           
+            }
  
-       }
-   }
+        }
+     }
+    }
+   
  

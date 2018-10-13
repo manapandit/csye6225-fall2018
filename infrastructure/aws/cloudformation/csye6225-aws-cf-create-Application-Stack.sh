@@ -1,21 +1,11 @@
-## Programming Infrastructure Setup using AWS CloudFormation via Command Line Interface *******************************************************
-
-# This script enables to retrieve resource parameters and setup Stack.
-
-
-# Stack ******************************************************************************************************
-
-echo "Enter Stack Name that you want to create:"
+echo "Enter Stack Name which you want to create."
 read Stack
-echo -e "\n"
 
-echo "Enter Stack Name which is same as that of networking script:"
+echo "Enter Stack Name same as networking script."
 read net
-echo -e "\n"
 
-#Validation ***************************************************************************************************
 
-Valid=$(aws cloudformation  validate-template --template-body file://csye6225-cf-networking.json)
+Valid=$(aws cloudformation  validate-template --template-body file://csye6225-cf-application.json)
 if [ $? -ne "0" ]
 then
   echo $Valid
@@ -25,43 +15,48 @@ else
   echo "CloudFormation Template is VALID.Proceeding.."
 fi
 
-#***********************************************************************************************************************
+subnetName1="-csye6225-Sub1"
+sub1=$net$subnetName1
+echo $sub1
 
-#Fetching Subnet Id
-subnetName="-csye6225-Sub1"
-sub1=$net$subnetName
-echo "Subnet name is $sub1 "
-
-subnetId=$(aws ec2 describe-subnets --query 'Subnets[*].{SubnetId:SubnetId}' \
+subnetId1=$(aws ec2 describe-subnets --query 'Subnets[*].{SubnetId:SubnetId}' \
 --filters "Name=tag:Name,Values=$sub1" \
 --output text )
-echo "Subnet Id:$sub1 "
 
-#*************************************************************************************************************************
+subnetName4="-csye6225-Sub4"
+sub4=$net$subnetName4
+echo $sub4
 
-#Fetching Hosted Zone Parameters
+subnetId4=$(aws ec2 describe-subnets --query 'Subnets[*].{SubnetId:SubnetId}' \
+--filters "Name=tag:Name,Values=$sub4" \
+--output text )
+
+subnetName5="-csye6225-Sub5"
+sub5=$net$subnetName5
+echo $sub5
+
+subnetId5=$(aws ec2 describe-subnets --query 'Subnets[*].{SubnetId:SubnetId}' \
+--filters "Name=tag:Name,Values=$sub5" \
+--output text )
+
 hostedZoneId=$(aws route53 list-hosted-zones --query 'HostedZones[*].{Id:Id}'  --output text |cut -d"/" -f3 )
+echo $hostedZoneId
 
 hostedZoneName=$(aws route53 list-hosted-zones-by-name --query 'HostedZones[*].{Name:Name}'  --output text |cut -d"." -f1-2)
+echo $hostedZoneName
 
-#*************************************************************************************************************************
-
-#Fetching VPC Id
 vpc_Id=$(aws ec2 describe-vpcs --query 'Vpcs[].{VpcId:VpcId}' \
 --filters "Name=tag:Name,Values=$net-csye6225-myVpc" "Name=is-default, Values=false" --output text 2>&1)
 
-#*************************************************************************************************************************
-
-#Stack Creation
 echo "Creating Stack in Progress....."
-create=$(aws cloudformation create-stack --stack-name $Stack --template-body file://csye6225-cf-application.json --parameters ParameterKey=mySubnetId,ParameterValue=$subnetId ParameterKey=myHostedZone,ParameterValue=$hostedZoneName ParameterKey=myVPC,ParameterValue=$vpc_Id) 
+create=$(aws cloudformation create-stack --stack-name $Stack --template-body file://csye6225-cf-application.json --parameters ParameterKey=mySubnetId1,ParameterValue=$subnetId1 ParameterKey=mySubnetId4,ParameterValue=$subnetId4 ParameterKey=mySubnetId5,ParameterValue=$subnetId5 ParameterKey=myHostedZone,ParameterValue=$hostedZoneName ParameterKey=myVPC,ParameterValue=$vpc_Id ParameterKey=S3Name,ParameterValue=$hostedZoneName.csye6225.com)
 
 if [ $? -ne "0" ]
 then 
- echo "Stack Creation request Failed"
+ echo "EC2 and RDS instance Creation request Failed"
  exit 1
 else
- echo "Stack Creation was Successful"
+ echo "EC2 and RDS instance Creation was Successful"
 fi
 
 Complete=$(aws cloudformation wait stack-create-complete --stack-name $Stack)
@@ -77,4 +72,3 @@ else
   
   exit 1
 fi
-#*********************************************************************************************************************************
