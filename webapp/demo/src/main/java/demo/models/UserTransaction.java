@@ -27,7 +27,10 @@ public class UserTransaction {
 	private User user;
 
 	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Attachments attachments;
+    	private Attachments attachments;
+	
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    	private Reciept reciept;
 
 	public User getUser() {
 		return user;
@@ -43,6 +46,13 @@ public class UserTransaction {
 
 	public void setAttachments(Attachments attachments) {
 		this.attachments = attachments;
+	}
+	public Reciept getReciept() {
+		return attachments;
+	}
+
+	public void setReciept(Reciept reciept) {
+		this.reciept = reciept;
 	}
 
 	public void setId(String id) {
