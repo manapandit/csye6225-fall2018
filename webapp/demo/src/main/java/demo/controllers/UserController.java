@@ -41,7 +41,9 @@ import demo.models.User;
 import demo.models.UserTransaction;
 import demo.repositories.UserRepository;
 import demo.repositories.UserTransactionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
+import demo.services.AmazonClient;
 
 @RestController
 // @CrossOrigin(origins = "*", maxAge = 3600)
@@ -54,9 +56,7 @@ public class UserController {
 	UserTransactionRepository userTransactionRepository;
 
 	@Autowired
-    AttachmentRepository attachmentRepository;
-
-
+    	AttachmentRepository attachmentRepository;
 
 	// -----------------------------------Fetching data for time ----------------------------------------------------//
 
@@ -153,7 +153,7 @@ public class UserController {
 			String username1 = uNamePwd[0];
 			String pass1 = uNamePwd[1];
 			if (username1.isEmpty() && pass1.isEmpty() && username1.length() == 0 && pass1.length() == 0) {
-				return new ResponseEntity("Bhai name and pass daal ", HttpStatus.UNAUTHORIZED);
+				return new ResponseEntity("PLease enter email and password ", HttpStatus.UNAUTHORIZED);
 			} else {
 				Optional<Integer> optionalUserAuth = userRepository.findIdByUserName(uNamePwd[0]); // user_id is there
 				// System.out.println(" oauth is : " + optionalUserAuth);
@@ -220,7 +220,7 @@ public class UserController {
 			String pass1 = uNamePwd[1];
 
 			if (username1.isEmpty() && pass1.isEmpty() && username1.length() == 0 && pass1.length() == 0) {
-				return new ResponseEntity("Bhai name and pass daal ", HttpStatus.UNAUTHORIZED);
+				return new ResponseEntity("PLease enter email and password", HttpStatus.UNAUTHORIZED);. 
 			} else {
 
 				Optional<Integer> optionalUserAuth = userRepository.findIdByUserName(uNamePwd[0]);
@@ -371,16 +371,15 @@ public class UserController {
 						Optional<String> opt = userTransactionRepository.findUid(id,user_id);
 						if(opt.isPresent()){
 							userTransactionRepository.deleteTransaction(id, user_id);
-							return new ResponseEntity("Deleted", HttpStatus.ACCEPTED);
+							return new ResponseEntity("You have deleted the transactionDeleted", HttpStatus.ACCEPTED);
 						}
 						else{
-							return new ResponseEntity("Not authorized", HttpStatus.UNAUTHORIZED);
+							return new ResponseEntity("Your are Not authorized", HttpStatus.UNAUTHORIZED);
 						}
 					} else
-						return new ResponseEntity("Not authorized", HttpStatus.UNAUTHORIZED);
+						return new ResponseEntity("You are not authorized", HttpStatus.UNAUTHORIZED);
 				} else
-					return new ResponseEntity("Not authorized", HttpStatus.UNAUTHORIZED);
-
+					return new ResponseEntity("You are not authorized", HttpStatus.UNAUTHORIZED);
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -441,9 +440,7 @@ public class UserController {
 
 
     }
-
-
-
+}
 
 
 
