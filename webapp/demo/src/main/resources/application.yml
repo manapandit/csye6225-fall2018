@@ -1,6 +1,5 @@
-
-amazonProperties:
-  endpointUrl: https://s3.us-east-2.amazonaws.com
-  accessKey: AKIAI7OURLZ6RVSOVUPA
-  secretKey: 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
-  bucketName: jishnu-s3-bucket
+#amazonProperties:
+#  endpointUrl: https://s3.us-east-2.amazonaws.com
+#  accessKey: AKIAI7OURLZ6RVSOVUPA
+#  secretKey: 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
+#  bucketName: jishnu-s3-bucket

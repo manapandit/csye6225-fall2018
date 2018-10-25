@@ -16,7 +16,6 @@ public class Reciept {
     public Reciept() {
 
     }
-
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private UserTransaction ut;
 

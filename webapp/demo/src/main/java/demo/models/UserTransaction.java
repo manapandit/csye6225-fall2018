@@ -26,8 +26,7 @@ public class UserTransaction {
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private User user;
 
-	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-        private Attachments attachments;
+
 	
 	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     	private Reciept reciept;
@@ -40,29 +39,13 @@ public class UserTransaction {
 		this.user = user;
 	}
 
-	public Attachments getAttachments() {
-		return attachments;
-	}
-
-	public void setAttachments(Attachments attachments) {
-		this.attachments = attachments;
-	}
-	
-
 	public void setReciept(Reciept reciept) {
 		this.reciept = reciept;
 
-	
-
+	}
 
 	public Reciept getReciept() {
 		return reciept;
-	}
-
-	
-
-	
-
 	}
 
 	public void setId(String id) {
