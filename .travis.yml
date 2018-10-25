@@ -9,8 +9,10 @@ install: true
 script:
   - pwd
   - cd webapp
+  - cd demo
+  - gradle init
+  - pwd
   - ./gradlew war
-  - cd build/libs
   - ls -al
   - cd ../../..
   - pwd
@@ -22,7 +24,7 @@ after_success:
   - mkdir codedeploy_artifact
   - cp infrastructure/aws/codedeploy/*.sh .
   - cp infrastructure/aws/codedeploy/*.yml .
-  - zip -r csye6225-web-app-${TRAVIS_JOB_NUMBER}.zip webapp/build/libs/demo.war *.sh *.yml
+  - zip -r csye6225-web-app-${TRAVIS_JOB_NUMBER}.zip webapp/demo.war *.sh *.yml
   - ls -al
   - mv csye6225-web-app-${TRAVIS_JOB_NUMBER}.zip codedeploy_artifact/
   - ls -al
