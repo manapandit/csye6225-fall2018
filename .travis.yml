@@ -11,7 +11,6 @@ script:
   - cd webapp/
   - cd demo/
   - gradle init
-  - pwd
   - ./gradlew war
   - ls -al
   - cd ../../..
