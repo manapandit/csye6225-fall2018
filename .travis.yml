@@ -11,7 +11,10 @@ script:
   - pwd
   - "cd webapp/demo"
   - "./gradlew war"
-  - "cd build/libs"
+  - "cd build"
+  - "pwd"
+  - "ls -al"
+  - "cd libs"
   - "ls -al"
   - "cd ../../.."
   - pwd
