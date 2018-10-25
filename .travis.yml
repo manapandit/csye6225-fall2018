@@ -5,7 +5,7 @@ jdk:
   
 sudo: false
   
-  install: true
+install: true
 
 script: 
   - pwd
