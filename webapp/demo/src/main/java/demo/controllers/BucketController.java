@@ -6,7 +6,11 @@ import demo.models.UserTransaction;
 import demo.repositories.AttachmentRepo;
 import demo.repositories.UserRepository;
 import demo.repositories.UserTransactionRepository;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import demo.services.AmazonClient;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.UUID;
 
@@ -54,32 +59,24 @@ import java.util.UUID;
                               System.out.println(ut.getReciept().getUrl());
                               System.out.println(ut.getReciept().getId());
 
-
-                          //r.getUt().setId(id);
-
-
-
-//                          u.getReciept().setUrl(this.amazonClient.uploadFile(file));
-
-
-
-//               UserTransaction ut = new UserTransaction();
-//               if(userTransactionRepository.findAllIDByUserId(ut.getId()).equals(id)){
-//                   ut.setReciept(r);
-//                   ut.getReciept().setId("1111");
-//
-//                   userTransactionRepository.save(ut);
-//               }
-
-
-
-
-            return this.amazonClient.uploadFile(file);
+            return "Successfully uploaded" ;
         }
 
-        @DeleteMapping("/deleteFile")
-        public String deleteFile(@RequestPart(value = "url") String fileUrl) {
-            return this.amazonClient.deleteFileFromS3Bucket(fileUrl);
-        }
+    @DeleteMapping("/deleteFile/{id}")
+    public String deleteFile(@RequestPart(value = "url") String fileUrl,@PathVariable String id,@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth) {
+        attachmentRepo.deleteRecieptBy(id);
+        return this.amazonClient.deleteFileFromS3Bucket(fileUrl);
     }
+
+    @GetMapping("/upload")
+    public ResponseEntity getAll(@PathVariable String id, @RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth,
+                                 HttpServletResponse response) throws JSONException {
+            UserTransaction ut = userTransactionRepository.findAllIDByUserId(id);
+            JSONObject bodyObject = new JSONObject("{}");
+        return new ResponseEntity(ut, HttpStatus.ACCEPTED);
+    }
+
+
+    }
+
 
