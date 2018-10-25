@@ -5,7 +5,6 @@ import javax.persistence.*;
 @Entity
 @Table
 public class Attachments {
-
     @Id
     //@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", length = 40)
