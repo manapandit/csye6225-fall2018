@@ -12,7 +12,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @ComponentScan(basePackages = "demo.Config")
 public class WebConfig {
 
-
     @Bean
     public CommonsMultipartResolver multipartResolver(){
         CommonsMultipartResolver resolver = new CommonsMultipartResolver();
