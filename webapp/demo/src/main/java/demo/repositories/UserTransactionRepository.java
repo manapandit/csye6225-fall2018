@@ -11,7 +11,9 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import demo.models.UserTransaction;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface UserTransactionRepository extends CrudRepository<UserTransaction, String> {
 
 	@Query("from UserTransaction u WHERE u.user.id=:user_id")
@@ -31,6 +33,17 @@ public interface UserTransactionRepository extends CrudRepository<UserTransactio
 
 	@Query("select id FROM UserTransaction u WHERE u.id=:id")
 	Optional<String> findTransactionId(@Param("id") String id);
+
+	@Query("select id FROM UserTransaction u WHERE u.id=:id")
+	String findTranactionId(@Param("id") String id);
+
+//	@Query("select reciept_id FROM UserTransaction u WHERE u.id=:id")
+//    String findReciept(@Param("id") String id);
+
+//	@Transactional
+//	@Modifying
+//	@Query("UPDATE UserTransaction u SET attachment_id = null where u.id=:id and u.attachments_id=:attId")
+//	void deleteAttachmentId(@Param("id") String id,@Param("attId") String attId);
 
 	@Transactional
 	@Modifying
