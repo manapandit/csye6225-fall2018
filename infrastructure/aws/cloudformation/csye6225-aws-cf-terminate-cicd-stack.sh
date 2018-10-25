@@ -11,7 +11,7 @@ else
 fi
 
 #Empty S3 bucket
-s3BucketName = $(aws s3api list-buckets --query "Buckets[1].Name" --output text)
+s3BucketName = $(aws s3api list-buckets --query "Buckets[2].Name" --output text)
 aws s3 rm s3://${s3Bucketname} --recursive
 
 
