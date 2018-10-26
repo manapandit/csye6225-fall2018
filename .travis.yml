@@ -45,6 +45,7 @@ deploy:
     secret_access_key: $secret_access_key
     skip_cleanup: true
     wait-until-deployed: true
+    acl: public_read
     on:
       branch: assignment5-6
       
