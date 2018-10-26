@@ -11,11 +11,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.print.attribute.standard.Media;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.ws.Response;
 
-import com.sun.xml.internal.ws.api.message.Attachment;
 import demo.models.Attachments;
 import demo.repositories.AttachmentRepository;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -23,19 +21,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.method.support.InvocableHandlerMethod;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-//import com.mysql.fabric.Response;
+
 
 import demo.models.User;
 import demo.models.UserTransaction;
