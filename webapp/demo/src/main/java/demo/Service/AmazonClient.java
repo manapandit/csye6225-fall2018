@@ -28,7 +28,7 @@ public class AmazonClient {
     //@Value("${amazonProperties.endpointUrl}")
     private String endpointUrl="https://s3.us-east-1.amazonaws.com";
     //@Value("${amazonProperties.bucketName}")
-    private String bucketName="dhruv-s3-bucket";
+    private String bucketName="csye62250-fall2018-sharmadhr.me.csye6225.com";
 //    @Value("${amazonProperties.accessKey}")
 //    private String accessKey;
 //    @Value("${amazonProperties.secretKey}")
