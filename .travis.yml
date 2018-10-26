@@ -45,6 +45,7 @@ deploy:
     region: us-east-1
     secret_access_key: $secret_access_key
     skip_cleanup: true
+    acl: public_read
     on:
       branch: assignment5-6
       
