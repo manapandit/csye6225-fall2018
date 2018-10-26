@@ -308,7 +308,7 @@ public class UserController {
 						user_id = optionalUserAuth.get(); // 178
 						ObjectMapper mapper = new ObjectMapper();
 						List<UserTransaction> li = userTransactionRepository.findIdByUserId(user_id);
-						List<String> myTranscation = new ArrayList<>();
+						List<String> myTranscation = new ArrayList();
 						JSONObject bodyObject = new JSONObject("{}");
 						for (UserTransaction t : li) {
 							bodyObject.put("description", t.getDescription());
