@@ -49,7 +49,7 @@ deploy:
     on:
       branch: assignment5-6
       
-  -  provider: codedeploy
+  - provider: codedeploy
     access_key_id: $access_key_id
     application: $application
     bucket: $s3_bucket
