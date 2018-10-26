@@ -1,5 +1,6 @@
 package demo.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import demo.models.Reciept;
 import demo.models.User;
 import demo.models.UserTransaction;
@@ -16,51 +17,51 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 
-import demo.services.AmazonClient;
+import demo.Service.AmazonClient;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-    @RequestMapping("/transaction/{id}")
-    public class BucketController {
+@RequestMapping("/transaction/{id}")
+public class BucketController {
 
-        private AmazonClient amazonClient;
-
-
-        @Autowired
-        private UserTransactionRepository userTransactionRepository;
-        @Autowired
-        private AttachmentRepo attachmentRepo;
-
-        @Autowired
-        BucketController(AmazonClient amazonClient) {
-            this.amazonClient = amazonClient;
-        }
-
-        @PostMapping("/uploadFile")
-        public String uploadFile(@RequestPart(value = "file") MultipartFile file, @PathVariable String id,
-                                 @RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth)  {
+    private AmazonClient amazonClient;
 
 
+    @Autowired
+    private UserTransactionRepository userTransactionRepository;
+    @Autowired
+    private AttachmentRepo attachmentRepo;
 
-            UserTransaction ut= userTransactionRepository.findAllIDByUserId(id);
+    @Autowired
+    BucketController(AmazonClient amazonClient) {
+        this.amazonClient = amazonClient;
+    }
+
+    @PostMapping("/uploadFile")
+    public String uploadFile(@RequestPart(value = "file") MultipartFile file, @PathVariable String id,
+                             @RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth)  {
 
 
-                              Reciept r = new Reciept();
-                              String uuid = UUID.randomUUID().toString();
-                              r.setId(uuid);
-                              r.setUrl(this.amazonClient.uploadFile(file));
-                              r.setUt(ut);
 
-                              ut.setReciept(r);
-                              attachmentRepo.save(r);
-                              System.out.println(ut.getReciept().getUrl());
-                              System.out.println(ut.getReciept().getId());
+        UserTransaction ut= userTransactionRepository.findAllIDByUserId(id);
 
-            return "Successfully uploaded" ;
-        }
+
+        Reciept r = new Reciept();
+        String uuid = UUID.randomUUID().toString();
+        r.setId(uuid);
+        r.setUrl(this.amazonClient.uploadFile(file));
+        r.setUt(ut);
+
+
+        ut.setReciept(r);
+        userTransactionRepository.save(ut);
+
+        return "Success";
+    }
+
 
     @DeleteMapping("/deleteFile/{id}")
     public String deleteFile(@RequestPart(value = "url") String fileUrl,@PathVariable String id,@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth) {
@@ -70,13 +71,14 @@ import java.util.UUID;
 
     @GetMapping("/upload")
     public ResponseEntity getAll(@PathVariable String id, @RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth,
-                                 HttpServletResponse response) throws JSONException {
-            UserTransaction ut = userTransactionRepository.findAllIDByUserId(id);
-            JSONObject bodyObject = new JSONObject("{}");
-        return new ResponseEntity(ut, HttpStatus.ACCEPTED);
+                                 HttpServletResponse response) throws JSONException, JsonProcessingException {
+
+        UserTransaction t = userTransactionRepository.findAllIDByUserTRansactionId(id);
+
+        JSONObject bodyObject = new JSONObject("{}");
+        bodyObject.put("id", t.getId());
+        bodyObject.put("url", t.getReciept().getUrl());
+        return new ResponseEntity(bodyObject.toString(),HttpStatus.ACCEPTED);
+
     }
-
-
-    }
-
-
+}
