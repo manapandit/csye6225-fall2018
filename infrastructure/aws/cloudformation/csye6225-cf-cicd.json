@@ -159,10 +159,7 @@
                                 "Fn::Join": [
                                     "",
                                     [
-                                        "arn:aws:s3:::",
-                                        {
-                                            "Ref": "DeployBucket"
-                                        }
+                                        "arn:aws:s3:::*"
                                     ]
                                 ]
                             }

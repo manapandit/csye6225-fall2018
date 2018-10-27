@@ -3,7 +3,6 @@ package demo.models;
 
 import javax.persistence.*;
 
-
 @Entity
 @Table
 public class Reciept {

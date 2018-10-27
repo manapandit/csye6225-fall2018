@@ -14,6 +14,16 @@
        "Type": "String"
        },
 
+       "Profiler" : {
+           "Description": "Instance Profile Name",
+           "Type" : "String"
+       },
+
+       "ec2name" : {
+        "Description": "Ec2 Name",
+        "Type" : "String"
+    },
+
        "mySubnetId1": {
            "Description": "VPC SubnetId1",
            "Type": "String"
@@ -162,7 +172,7 @@
            "KeyName" : {
                "Ref" : "EC2key"
            },
-           "Tags": [{"Key": "Name","Value": {"Fn::Join": ["",[{"Ref": "AWS::StackName"},"-csye6225-EC2"]]}}],
+           "Tags": [{"Key": "Name","Value": {"Ref":"ec2name"}}],
            "BlockDeviceMappings" : [
               {
                  "DeviceName" : "/dev/sda1",
@@ -182,6 +192,11 @@
                    "SubnetId": {"Ref": "mySubnetId1"}
                }
            ],
+
+           "IamInstanceProfile": {
+            "Ref": "Profiler"
+        },
+
            "UserData": {
             "Fn::Base64": {
                 "Fn::Join": [
@@ -302,6 +317,12 @@
                        "FromPort": 443,
                        "ToPort": 443
                    },
+                   {
+                    "IpProtocol": "tcp",
+                    "CidrIp": "0.0.0.0/0",
+                    "FromPort": 8080,
+                    "ToPort": 8080
+                    },
 
                     {
                        "IpProtocol": "tcp",
