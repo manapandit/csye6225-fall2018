@@ -433,6 +433,8 @@ public class UserController {
 		public void testMethod()
 		{
 			System.out.println("/demo/test");
+            System.out.println("/demo/testlineadded");
+
 			//return "Hello!";
 		}
 
