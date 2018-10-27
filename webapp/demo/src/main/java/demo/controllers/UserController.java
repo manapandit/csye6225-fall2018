@@ -10,10 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.ws.Response;
-
 import demo.models.Attachments;
 import demo.repositories.AttachmentRepository;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -29,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 
 import demo.models.User;
 import demo.models.UserTransaction;
@@ -302,7 +298,7 @@ public class UserController {
 						user_id = optionalUserAuth.get(); // 178
 						ObjectMapper mapper = new ObjectMapper();
 						List<UserTransaction> li = userTransactionRepository.findIdByUserId(user_id);
-						List<String> myTranscation = new ArrayList();
+						List<String> myTranscation = new ArrayList<>();
 						JSONObject bodyObject = new JSONObject("{}");
 						for (UserTransaction t : li) {
 							bodyObject.put("description", t.getDescription());
@@ -432,6 +428,10 @@ public class UserController {
 
         //-----------------------------------------------get Attachments--------------------------------------------------------//
 
+		@RequestMapping(value="/test", method = RequestMethod.GET )
+		public String testMethod(){
+    	return "Hello!";
+		}
 
     }
 

@@ -2,10 +2,8 @@ package demo.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import demo.models.Reciept;
-import demo.models.User;
 import demo.models.UserTransaction;
 import demo.repositories.AttachmentRepo;
-import demo.repositories.UserRepository;
 import demo.repositories.UserTransactionRepository;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import demo.Service.AmazonClient;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -81,4 +78,6 @@ public class BucketController {
         return new ResponseEntity(bodyObject.toString(),HttpStatus.ACCEPTED);
 
     }
+
+
 }
