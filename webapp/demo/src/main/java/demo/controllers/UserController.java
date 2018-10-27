@@ -298,7 +298,6 @@ public class UserController {
 					if (u.getEmail().equals(abc) && BCrypt.checkpw(def, u.getPassword()) == true) {
 
 						user_id = optionalUserAuth.get(); // 178
-						ObjectMapper mapper = new ObjectMapper();
 						List<UserTransaction> li = userTransactionRepository.findIdByUserId(user_id);
 						List<String> myTranscation = new ArrayList<>();
 						JSONObject bodyObject = new JSONObject("{}");
