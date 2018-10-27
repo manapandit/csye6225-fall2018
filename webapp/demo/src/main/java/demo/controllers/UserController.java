@@ -115,7 +115,7 @@ public class UserController {
 						return new ResponseEntity("User with the given email already exists!", HttpStatus.CONFLICT);
 					}
 				} else {
-					return new ResponseEntity("Not authorized", HttpStatus.UNAUTHORIZED);
+					return new ResponseEntity(	"Not authorized", HttpStatus.UNAUTHORIZED);
 				}
 			} else {
 				return new ResponseEntity("Not authorized", HttpStatus.UNAUTHORIZED);
@@ -429,7 +429,7 @@ public class UserController {
 
         //-----------------------------------------------get Attachments--------------------------------------------------------//
 
-		@RequestMapping(value="/demo/test", method = RequestMethod.GET )
+		@RequestMapping(value="/demo", method = RequestMethod.GET )
 		public String testMethod(){
     	return "Hello!";
 		}
