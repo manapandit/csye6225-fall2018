@@ -429,7 +429,7 @@ public class UserController {
 
         //-----------------------------------------------get Attachments--------------------------------------------------------//
 
-		@RequestMapping(value="/demo", method = RequestMethod.GET )
+		@RequestMapping(value="/demo/test", method = RequestMethod.GET )
 		public String testMethod(){
     	return "Hello!";
 		}
