@@ -2,7 +2,9 @@ package demo.repositories;
 
 import demo.models.Attachments;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface AttachmentRepository extends CrudRepository<Attachments, String> {
 
 //    @Query("from Attachments a WHERE a.attachments.id=:user_transaction_id")

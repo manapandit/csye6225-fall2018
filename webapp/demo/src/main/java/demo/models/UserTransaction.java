@@ -1,6 +1,5 @@
 package demo.models;
 
-import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
 
