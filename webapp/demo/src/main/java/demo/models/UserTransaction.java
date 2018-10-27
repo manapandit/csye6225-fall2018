@@ -1,5 +1,6 @@
 package demo.models;
 
+
 import javax.persistence.*;
 
 @Entity
@@ -26,10 +27,11 @@ public class UserTransaction {
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private User user;
 
-
-	
 	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    	private Reciept reciept;
+    private Attachments attachments;
+
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	private Reciept reciept;
 
 	public User getUser() {
 		return user;
@@ -39,13 +41,20 @@ public class UserTransaction {
 		this.user = user;
 	}
 
-	public void setReciept(Reciept reciept) {
-		this.reciept = reciept;
+	public Attachments getAttachments() {
+		return attachments;
+	}
 
+	public void setAttachments(Attachments attachments) {
+		this.attachments = attachments;
 	}
 
 	public Reciept getReciept() {
 		return reciept;
+	}
+
+	public void setReciept(Reciept reciept) {
+		this.reciept = reciept;
 	}
 
 	public void setId(String id) {
