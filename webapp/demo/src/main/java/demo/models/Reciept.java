@@ -3,7 +3,6 @@ package demo.models;
 
 import javax.persistence.*;
 
-
 @Entity
 @Table
 public class Reciept {
@@ -16,6 +15,7 @@ public class Reciept {
     public Reciept() {
 
     }
+
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private UserTransaction ut;
 
