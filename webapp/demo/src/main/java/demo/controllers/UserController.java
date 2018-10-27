@@ -10,12 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-import javax.print.attribute.standard.Media;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.ws.Response;
-
-import com.sun.xml.internal.ws.api.message.Attachment;
 import demo.models.Attachments;
 import demo.repositories.AttachmentRepository;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -23,27 +18,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.method.support.InvocableHandlerMethod;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-//import com.mysql.fabric.Response;
 
 import demo.models.User;
 import demo.models.UserTransaction;
 import demo.repositories.UserRepository;
 import demo.repositories.UserTransactionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
-import demo.services.AmazonClient;
 
 @RestController
 // @CrossOrigin(origins = "*", maxAge = 3600)
@@ -55,12 +43,16 @@ public class UserController {
 	@Autowired
 	UserTransactionRepository userTransactionRepository;
 
+
+
 	@Autowired
-    	AttachmentRepository attachmentRepository;
+    AttachmentRepository attachmentRepository;
+
+
 
 	// -----------------------------------Fetching data for time ----------------------------------------------------//
 
-	@GetMapping("/time")
+	@GetMapping("/demo/time")
 	public ResponseEntity<String> getTime(@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth)
 			throws JSONException {
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
@@ -123,7 +115,7 @@ public class UserController {
 						return new ResponseEntity("User with the given email already exists!", HttpStatus.CONFLICT);
 					}
 				} else {
-					return new ResponseEntity("Not authorized", HttpStatus.UNAUTHORIZED);
+					return new ResponseEntity(	"Not authorized", HttpStatus.UNAUTHORIZED);
 				}
 			} else {
 				return new ResponseEntity("Not authorized", HttpStatus.UNAUTHORIZED);
@@ -153,7 +145,7 @@ public class UserController {
 			String username1 = uNamePwd[0];
 			String pass1 = uNamePwd[1];
 			if (username1.isEmpty() && pass1.isEmpty() && username1.length() == 0 && pass1.length() == 0) {
-				return new ResponseEntity("PLease enter email and password ", HttpStatus.UNAUTHORIZED);
+				return new ResponseEntity("Bhai name and pass daal ", HttpStatus.UNAUTHORIZED);
 			} else {
 				Optional<Integer> optionalUserAuth = userRepository.findIdByUserName(uNamePwd[0]); // user_id is there
 				// System.out.println(" oauth is : " + optionalUserAuth);
@@ -220,7 +212,7 @@ public class UserController {
 			String pass1 = uNamePwd[1];
 
 			if (username1.isEmpty() && pass1.isEmpty() && username1.length() == 0 && pass1.length() == 0) {
-				return new ResponseEntity("PLease enter email and password", HttpStatus.UNAUTHORIZED);. 
+				return new ResponseEntity("Bhai name and pass daal ", HttpStatus.UNAUTHORIZED);
 			} else {
 
 				Optional<Integer> optionalUserAuth = userRepository.findIdByUserName(uNamePwd[0]);
@@ -306,9 +298,8 @@ public class UserController {
 					if (u.getEmail().equals(abc) && BCrypt.checkpw(def, u.getPassword()) == true) {
 
 						user_id = optionalUserAuth.get(); // 178
-						ObjectMapper mapper = new ObjectMapper();
 						List<UserTransaction> li = userTransactionRepository.findIdByUserId(user_id);
-						List<String> myTranscation = new ArrayList<>();
+						List<String> myTranscation = new ArrayList();
 						JSONObject bodyObject = new JSONObject("{}");
 						for (UserTransaction t : li) {
 							bodyObject.put("description", t.getDescription());
@@ -371,15 +362,16 @@ public class UserController {
 						Optional<String> opt = userTransactionRepository.findUid(id,user_id);
 						if(opt.isPresent()){
 							userTransactionRepository.deleteTransaction(id, user_id);
-							return new ResponseEntity("You have deleted the transactionDeleted", HttpStatus.ACCEPTED);
+							return new ResponseEntity("Deleted", HttpStatus.ACCEPTED);
 						}
 						else{
-							return new ResponseEntity("Your are Not authorized", HttpStatus.UNAUTHORIZED);
+							return new ResponseEntity("Not authorized", HttpStatus.UNAUTHORIZED);
 						}
 					} else
-						return new ResponseEntity("You are not authorized", HttpStatus.UNAUTHORIZED);
+						return new ResponseEntity("Not authorized", HttpStatus.UNAUTHORIZED);
 				} else
-					return new ResponseEntity("You are not authorized", HttpStatus.UNAUTHORIZED);
+					return new ResponseEntity("Not authorized", HttpStatus.UNAUTHORIZED);
+
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -408,39 +400,48 @@ public class UserController {
             Optional<String> optionalUserAuth = userTransactionRepository.findTransactionId(id);
 
             //int i = Integer.parseInt(id);
+				if(optionalUserAuth.isPresent() || !optionalUserAuth.equals(Optional.empty())) {
+					String uuid = UUID.randomUUID().toString();
+					// Attachments attachments = new Attachments();
+					Attachments attachments = new Attachments();
+					attachments.setId(uuid);
+					attachments.setFileName(fileName);
+					// attachments.setFileLocation(File_Location);
 
-                String uuid = UUID.randomUUID().toString();
-                // Attachments attachments = new Attachments();
-                Attachments attachments = new Attachments();
-                attachments.setId(uuid);
-                attachments.setFileName(fileName);
-               // attachments.setFileLocation(File_Location);
+					HttpHeaders headers = new HttpHeaders();
+					headers.add("File Uploaded Successfully!!", fileName);
+					attachments.setFileLocation(File_Location + "/" + fileName);
+					attachmentRepository.save(attachments);
+					ut.setAttachments(attachments);
+					return "File uploaded Successfully " + File_Location + "/" + fileName;
 
-                HttpHeaders headers = new HttpHeaders();
-                headers.add("File Uploaded Successfully!!", fileName);
-                attachments.setFileLocation(File_Location + "/" + fileName);
-                attachmentRepository.save(attachments);
-                ut.setAttachments(attachments);
-                return "File uploaded Successfully " + File_Location + "/" + fileName;
-
-
+				}
+				else{
+					return "Invalid Transaction ID";
+				}
 
         }catch(IOException ex) {
 
             return "Upload failed";
         }
 
-
-
-
-
-
-
         }
 
+        //-----------------------------------------------get Attachments--------------------------------------------------------//
+
+		@RequestMapping(value="/demo/test", method = RequestMethod.GET )
+		public void testMethod()
+		{
+			System.out.println("/demo/test");
+            System.out.println("/demo/testlineadded");
+
+			//return "Hello!";
+		}
 
     }
-}
+
+
+
 
 
 

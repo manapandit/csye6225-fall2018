@@ -48,8 +48,15 @@ echo $hostedZoneName
 vpc_Id=$(aws ec2 describe-vpcs --query 'Vpcs[].{VpcId:VpcId}' \
 --filters "Name=tag:Name,Values=$net-csye6225-myVpc" "Name=is-default, Values=false" --output text 2>&1)
 
+Profiler=$(aws iam list-instance-profiles --query InstanceProfiles[].{InstanceProfileName:InstanceProfileName} --output text)
+echo $Profiler
+
+ec2=$(aws deploy get-deployment-group --application-name CSYE6225CodeDeployApplication \
+ --deployment-group-name Codedeploy_groupname --query deploymentGroupInfo.ec2TagFilters[].{Value:Value} --output text)
+echo $ec2
+
 echo "Creating Stack in Progress....."
-create=$(aws cloudformation create-stack --stack-name $Stack --template-body file://csye6225-cf-application.json --parameters ParameterKey=mySubnetId1,ParameterValue=$subnetId1 ParameterKey=mySubnetId4,ParameterValue=$subnetId4 ParameterKey=mySubnetId5,ParameterValue=$subnetId5 ParameterKey=myHostedZone,ParameterValue=$hostedZoneName ParameterKey=myVPC,ParameterValue=$vpc_Id ParameterKey=S3Name,ParameterValue=$hostedZoneName.csye6225.com)
+create=$(aws cloudformation create-stack --stack-name $Stack --template-body file://csye6225-cf-application.json --parameters ParameterKey=mySubnetId1,ParameterValue=$subnetId1 ParameterKey=mySubnetId4,ParameterValue=$subnetId4 ParameterKey=mySubnetId5,ParameterValue=$subnetId5 ParameterKey=myHostedZone,ParameterValue=$hostedZoneName ParameterKey=myVPC,ParameterValue=$vpc_Id ParameterKey=S3Name,ParameterValue=$hostedZoneName.csye6225.com ParameterKey=Profiler,ParameterValue=$Profiler ParameterKey=ec2name,ParameterValue=$ec2)
 
 if [ $? -ne "0" ]
 then 
