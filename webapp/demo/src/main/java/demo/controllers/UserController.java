@@ -52,7 +52,7 @@ public class UserController {
 
 	// -----------------------------------Fetching data for time ----------------------------------------------------//
 
-	@GetMapping("/time")
+	@GetMapping("/demo/time")
 	public ResponseEntity<String> getTime(@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth)
 			throws JSONException {
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
