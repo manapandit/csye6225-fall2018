@@ -10,10 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.ws.Response;
-
 import demo.models.Attachments;
 import demo.repositories.AttachmentRepository;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -29,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 
 import demo.models.User;
 import demo.models.UserTransaction;
@@ -47,6 +43,8 @@ public class UserController {
 	@Autowired
 	UserTransactionRepository userTransactionRepository;
 
+
+
 	@Autowired
     AttachmentRepository attachmentRepository;
 
@@ -54,7 +52,7 @@ public class UserController {
 
 	// -----------------------------------Fetching data for time ----------------------------------------------------//
 
-	@GetMapping("/time")
+	@GetMapping("/demo/time")
 	public ResponseEntity<String> getTime(@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth)
 			throws JSONException {
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
@@ -117,7 +115,7 @@ public class UserController {
 						return new ResponseEntity("User with the given email already exists!", HttpStatus.CONFLICT);
 					}
 				} else {
-					return new ResponseEntity("Not authorized", HttpStatus.UNAUTHORIZED);
+					return new ResponseEntity(	"Not authorized", HttpStatus.UNAUTHORIZED);
 				}
 			} else {
 				return new ResponseEntity("Not authorized", HttpStatus.UNAUTHORIZED);
@@ -300,7 +298,6 @@ public class UserController {
 					if (u.getEmail().equals(abc) && BCrypt.checkpw(def, u.getPassword()) == true) {
 
 						user_id = optionalUserAuth.get(); // 178
-						ObjectMapper mapper = new ObjectMapper();
 						List<UserTransaction> li = userTransactionRepository.findIdByUserId(user_id);
 						List<String> myTranscation = new ArrayList();
 						JSONObject bodyObject = new JSONObject("{}");
@@ -432,6 +429,14 @@ public class UserController {
 
         //-----------------------------------------------get Attachments--------------------------------------------------------//
 
+		@RequestMapping(value="/demo/test", method = RequestMethod.GET )
+		public void testMethod()
+		{
+			System.out.println("/demo/test");
+            System.out.println("/demo/testlineadded");
+
+			//return "Hello!";
+		}
 
     }
 
