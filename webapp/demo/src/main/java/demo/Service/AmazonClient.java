@@ -22,6 +22,7 @@ public class AmazonClient {
 
 
     private AmazonS3 s3client;
+
     @Autowired
     Properties properties;
     private String profile = System.getProperty("spring.profiles.active");
