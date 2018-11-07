@@ -29,8 +29,7 @@
 ##### Create the database "demo" using sql coammands then write "use demo" to change the schema to the database we created
 ##### Open IntelliJ IDE and import the folder demo
 ##### On the right-side click on the database tab and add mariaDb and fill all the credentials
-##### Right click on the "demo" in IntelliJ and in the Maven side-list click on Maven re-import
-##### Run the project and open Postman and write the correct requests as present in the UserController
+
 
 
 # Link to TravisCI build for the project
@@ -38,4 +37,5 @@ https://travis-ci.com/paduthol-jishnu/csye6225-fall2018
 https://travis-ci.com/sharmadhruv/csye6225-fall2018
 https://travis-ci.com/manapandit/csye6225-fall2018
 https://travis-ci.com/Rini2511/csye6225-fall2018
+
 
