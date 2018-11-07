@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,7 +33,7 @@ import demo.repositories.UserTransactionRepository;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-// @CrossOrigin(origins = "*", maxAge = 3600)
+@PropertySource("classpath:application.properties")
 public class UserController {
 
 	@Autowired
