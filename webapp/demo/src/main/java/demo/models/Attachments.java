@@ -2,26 +2,18 @@ package demo.models;
 
 import javax.persistence.*;
 
-@Entity
-@Table
 public class Attachments {
 
-    @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", length = 40)
     private String id;
 
-    @Column(name = "fileName", length = 40)
     public String fileName;
 
-    @Column(name = "fileLocation", length = 255)
     public String fileLocation;
 
     public Attachments() {
 
     }
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private UserTransaction userTransaction;
 
     public String getFileName() {

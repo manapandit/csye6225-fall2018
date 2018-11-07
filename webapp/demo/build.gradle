@@ -19,14 +19,16 @@ tasks.withType(JavaCompile) {
 
 repositories {
         
-     maven { url "http://repo.maven.apache.org/maven2" }
+     maven { url "https://repo.maven.apache.org/maven2" }
 }
 dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version:'2.0.5.RELEASE'
+    compile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-jasper', version:'8.5.34'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version:'2.0.5.RELEASE'
     compile(group: 'org.hibernate', name: 'hibernate-core', version:'5.3.6.Final') {
 exclude(module: 'xml-apis')
     }
+    compile group: 'org.springframework', name: 'spring-context', version:'5.0.9.RELEASE'
     compile group: 'org.json', name: 'json', version:'20090211'
     compile group: 'org.springframework.data', name: 'spring-data-rest-hal-browser', version:'3.0.10.RELEASE'
     compile group: 'org.mindrot', name: 'jbcrypt', version:'0.3m'

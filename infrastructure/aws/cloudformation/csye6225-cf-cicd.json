@@ -205,17 +205,7 @@
                     {
                         "Key": "Name",
                         "Type": "KEY_AND_VALUE",
-                        "Value": {
-                            "Fn::Join": [
-                                "",
-                                [
-                                    {
-                                        "Ref": "AWS::StackName"
-                                    },
-                                    "-csye6225-ec2"
-                                ]
-                            ]
-                        }
+                        "Value": "appstack-csye6225-EC2"
                     }
                 ],
                 "ServiceRoleArn": {

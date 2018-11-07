@@ -8,6 +8,8 @@ import demo.repositories.UserTransactionRepository;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,13 +20,25 @@ import org.springframework.web.multipart.MultipartFile;
 import demo.Service.AmazonClient;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Properties;
 import java.util.UUID;
 
 @RestController
+@PropertySource("classpath:application.properties")
 @RequestMapping("/transaction/{id}")
 public class BucketController {
 
     private AmazonClient amazonClient;
+
+    @Value("${amazonProperties.bucketName}")
+    private String bucketName;
+
+    @Value("${amazonProperties.endpointUrl}")
+    private String endPointUrl;
+
+    @Autowired
+    Properties properties;
+    private String profile = System.getProperty("spring.profiles.active");
 
 
     @Autowired
