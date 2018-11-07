@@ -62,7 +62,7 @@
                                 "codedeploy:GetApplicationRevision"
                             ],
                             "Resource": [
-	                                "arn:aws:codedeploy:::application:CSYE6225CodeDeployApplication"
+                                "arn:aws:codedeploy:::application:CSYE6225CodeDeployApplication"
                             ]
                         },
                         {
@@ -159,10 +159,7 @@
                                 "Fn::Join": [
                                     "",
                                     [
-                                        "arn:aws:s3:::",
-                                        {
-                                            "Ref": "DeployBucket"
-                                        }
+                                        "arn:aws:s3:::*"
                                     ]
                                 ]
                             }

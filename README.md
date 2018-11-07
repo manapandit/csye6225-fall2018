@@ -14,7 +14,7 @@
 ##### 3 Bcrypt
 ##### 4 Spring-Boot-Starter-Security
 
-# Build and Deploying Application Locally
+# Build and Deploying Application Locally and dev
 ##### IDE : IntelliJ
 ##### Database: MariaDB
 ##### Rest API
