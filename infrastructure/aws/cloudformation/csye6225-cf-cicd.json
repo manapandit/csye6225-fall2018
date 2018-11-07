@@ -208,7 +208,7 @@
                     {
                         "Key": "Name",
                         "Type": "KEY_AND_VALUE",
-                        "Value": "Appstack-csye6225-EC2"
+                        "Value": "appstack-csye6225-EC2"
                     }
                 ],
                 "ServiceRoleArn": {
