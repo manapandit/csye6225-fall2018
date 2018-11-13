@@ -83,28 +83,29 @@ public class UserController {
 
 		try {
 
-			Optional<Integer> optionalUserAuth = userRepository.findIdByUserName(uNamePwd[0]);
+			//Optional<Integer> optionalUserAuth = userRepository.findIdByUserName(uNamePwd[0]);
 
 
-				User u = userRepository.findById(optionalUserAuth.get()).get();
+			//User u = userRepository.findById(optionalUserAuth.get()).get();
+			User u = new User();
 
-				String abc = uNamePwd[0].toString();
-				String def = uNamePwd[1].toString();
+			String abc = uNamePwd[0].toString();
+			String def = uNamePwd[1].toString();
 
-				String encode = BCrypt.hashpw(def, BCrypt.gensalt(12));
-				System.out.println("encode is" + encode);
+			String encode = BCrypt.hashpw(def, BCrypt.gensalt(12));
+			System.out.println("encode is" + encode);
 
-				if (u.getEmail().equals(abc) && BCrypt.checkpw(def, u.getPassword()) == true) {
-					Optional<Integer> optionalUser = userRepository.findIdByUserName(userJson.getEmail());
-					if (!optionalUser.isPresent()) {
-						userJson.setPassword(BCrypt.hashpw(userJson.getPassword(), BCrypt.gensalt(12))); // salting
-																											// password
-						userRepository.save(userJson);
-						return new ResponseEntity(userJson, HttpStatus.OK);
-					} else {
-						return new ResponseEntity("User with the given email already exists!", HttpStatus.CONFLICT);
-					}
-				}
+//				if (u.getEmail().equals(abc) && BCrypt.checkpw(def, u.getPassword()) == true) {
+			Optional<Integer> optionalUser = userRepository.findIdByUserName(userJson.getEmail());
+			if (!optionalUser.isPresent()) {
+				userJson.setPassword(BCrypt.hashpw(userJson.getPassword(), BCrypt.gensalt(12))); // salting
+				// password
+				userRepository.save(userJson);
+				return new ResponseEntity(userJson, HttpStatus.OK);
+			} else {
+				return new ResponseEntity("User with the given email already exists!", HttpStatus.CONFLICT);
+			}
+		//}
 
 
 
