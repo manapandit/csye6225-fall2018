@@ -84,8 +84,7 @@ public class UserController {
 		try {
 
 			Optional<Integer> optionalUserAuth = userRepository.findIdByUserName(uNamePwd[0]);
-			if (optionalUserAuth.isPresent() || optionalUserAuth.get() != 0
-					|| !optionalUserAuth.equals(Optional.empty())) {
+
 
 				User u = userRepository.findById(optionalUserAuth.get()).get();
 
@@ -105,12 +104,8 @@ public class UserController {
 					} else {
 						return new ResponseEntity("User with the given email already exists!", HttpStatus.CONFLICT);
 					}
-				} else {
-					return new ResponseEntity(	"Not authorized", HttpStatus.UNAUTHORIZED);
 				}
-			} else {
-				return new ResponseEntity("Not authorized", HttpStatus.UNAUTHORIZED);
-			}
+
 
 
 		} catch (Exception ex) {
