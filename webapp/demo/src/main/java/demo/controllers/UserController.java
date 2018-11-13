@@ -42,19 +42,9 @@ public class UserController {
 	@Autowired
 	UserTransactionRepository userTransactionRepository;
 
-	@Autowired
-    AttachmentRepository attachmentRepository;
-
-    @Value("${amazonProperties.bucketName}")
-    private String bucketName;
-
-    @Value("${amazonProperties.endpointUrl}")
-    private String endPointUrl;
-
     @Autowired
     Properties properties;
-    private String profile = System.getProperty("spring.profiles.active");
-
+    private String profile = System.getProperty("spring.profiles.active=Dev");
 
 
 	// -----------------------------------Fetching data for time ----------------------------------------------------//
@@ -62,6 +52,7 @@ public class UserController {
 	@GetMapping("/demo/time")
 	public ResponseEntity<String> getTime(@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth)
 			throws JSONException {
+		System.out.println("First Phase");
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 		LocalDateTime now = LocalDateTime.now();
 		JSONObject bodyObject = new JSONObject("{}");
@@ -391,59 +382,59 @@ public class UserController {
 
     // -----------------------------------------------Post Attachment-------------------------------------------------------//
 
-   private final String File_Location = "/home/dhruvsharma/Downloads/demo/uploads";
-
-    @RequestMapping(value="/transaction/{id}/attachments", method=RequestMethod.POST, consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String uploadAttachment(@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth, @PathVariable String id,
-                                                        @RequestParam("file")MultipartFile file)throws ArrayIndexOutOfBoundsException, InvocationTargetException  {
-
-
-        try {
-            UserTransaction ut = userTransactionRepository.findAllIDByUserId(id);
-
-            String fileName = file.getOriginalFilename();
-            File f = new File(File_Location + File.separator + fileName);
-            file.transferTo(f);
-            Optional<String> optionalUserAuth = userTransactionRepository.findTransactionId(id);
-
-            //int i = Integer.parseInt(id);
-				if(optionalUserAuth.isPresent() || !optionalUserAuth.equals(Optional.empty())) {
-					String uuid = UUID.randomUUID().toString();
-					// Attachments attachments = new Attachments();
-					Attachments attachments = new Attachments();
-					attachments.setId(uuid);
-					attachments.setFileName(fileName);
-					// attachments.setFileLocation(File_Location);
-
-					HttpHeaders headers = new HttpHeaders();
-					headers.add("File Uploaded Successfully!!", fileName);
-					attachments.setFileLocation(File_Location + "/" + fileName);
-					attachmentRepository.save(attachments);
-					ut.setAttachments(attachments);
-					return "File uploaded Successfully " + File_Location + "/" + fileName;
-
-				}
-				else{
-					return "Invalid Transaction ID";
-				}
-
-        }catch(IOException ex) {
-
-            return "Upload failed";
-        }
-
-        }
-
-        //-----------------------------------------------get Attachments--------------------------------------------------------//
-
-		@RequestMapping(value="/demo/test", method = RequestMethod.GET )
-		public void testMethod()
-		{
-			System.out.println("/demo/test");
-            System.out.println("/demo/testlineadded");
-
-			//return "Hello!";
-		}
+//   private final String File_Location = "/home/dhruvsharma/Downloads/demo/uploads";
+//
+//    @RequestMapping(value="/transaction/{id}/attachments", method=RequestMethod.POST, consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public String uploadAttachment(@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth, @PathVariable String id,
+//                                                        @RequestParam("file")MultipartFile file)throws ArrayIndexOutOfBoundsException, InvocationTargetException  {
+//
+//
+//        try {
+//            UserTransaction ut = userTransactionRepository.findAllIDByUserId(id);
+//
+//            String fileName = file.getOriginalFilename();
+//            File f = new File(File_Location + File.separator + fileName);
+//            file.transferTo(f);
+//            Optional<String> optionalUserAuth = userTransactionRepository.findTransactionId(id);
+//
+//            //int i = Integer.parseInt(id);
+//				if(optionalUserAuth.isPresent() || !optionalUserAuth.equals(Optional.empty())) {
+//					String uuid = UUID.randomUUID().toString();
+//					// Attachments attachments = new Attachments();
+//					Attachments attachments = new Attachments();
+//					attachments.setId(uuid);
+//					attachments.setFileName(fileName);
+//					// attachments.setFileLocation(File_Location);
+//
+//					HttpHeaders headers = new HttpHeaders();
+//					headers.add("File Uploaded Successfully!!", fileName);
+//					attachments.setFileLocation(File_Location + "/" + fileName);
+//					attachmentRepository.save(attachments);
+//					ut.setAttachments(attachments);
+//					return "File uploaded Successfully " + File_Location + "/" + fileName;
+//
+//				}
+//				else{
+//					return "Invalid Transaction ID";
+//				}
+//
+//        }catch(IOException ex) {
+//
+//            return "Upload failed";
+//        }
+//
+//        }
+//
+//        //-----------------------------------------------get Attachments--------------------------------------------------------//
+//
+//		@RequestMapping(value="/demo/test", method = RequestMethod.GET )
+//		public void testMethod()
+//		{
+//			System.out.println("/demo/test");
+//            System.out.println("/demo/testlineadded");
+//
+//			//return "Hello!";
+//		}
 
     }
 
