@@ -38,7 +38,7 @@ public class BucketController {
 
     @Autowired
     Properties properties;
-    private String profile = System.getProperty("spring.profiles.active");
+    private String profile = System.getProperty("spring.profiles.active=Dev");
 
 
     @Autowired

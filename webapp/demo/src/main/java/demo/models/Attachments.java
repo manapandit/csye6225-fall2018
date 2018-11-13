@@ -14,8 +14,6 @@ public class Attachments {
 
     }
 
-    private UserTransaction userTransaction;
-
     public String getFileName() {
         return fileName;
     }
@@ -28,20 +26,12 @@ public class Attachments {
         return fileLocation;
     }
 
-    public UserTransaction getUserTransaction() {
-        return userTransaction;
-    }
-
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public void setUserTransaction(UserTransaction userTransaction) {
-        this.userTransaction = userTransaction;
     }
 
     public void setFileLocation(String fileLocation) {
