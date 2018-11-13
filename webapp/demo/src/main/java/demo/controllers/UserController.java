@@ -81,7 +81,7 @@ public class UserController {
 		byte[] bytes = Base64.decodeBase64(auth.split(" ")[1]);
 		String uNamePwd[] = new String(bytes).split(":");
 
-		try {
+//		try {
 
 			//Optional<Integer> optionalUserAuth = userRepository.findIdByUserName(uNamePwd[0]);
 
@@ -109,10 +109,10 @@ public class UserController {
 
 
 
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return new ResponseEntity("Not authorized", HttpStatus.UNAUTHORIZED);
+//		} catch (Exception ex) {
+//			ex.printStackTrace();
+//		}
+//		return new ResponseEntity("Not authorized", HttpStatus.UNAUTHORIZED);
 
 	}
 
