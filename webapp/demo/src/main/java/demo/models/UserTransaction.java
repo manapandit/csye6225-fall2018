@@ -4,7 +4,7 @@ package demo.models;
 import javax.persistence.*;
 
 @Entity
-@Table
+@Table(name = "UserTransaction")
 public class UserTransaction {
 	@Id
 	@Column(name = "id", length = 40)
