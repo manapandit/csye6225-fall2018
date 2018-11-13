@@ -70,7 +70,7 @@ public class BucketController {
         ut.setReciept(r);
         userTransactionRepository.save(ut);
 
-        return "Success";
+        return r.getUrl();
     }
 
 
