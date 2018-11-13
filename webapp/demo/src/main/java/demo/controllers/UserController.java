@@ -162,6 +162,7 @@ public class UserController {
 						u.setPassword(password);
 						ut.setId(uuid);
 						ut.setUser(u);
+						System.out.print("#####################################" + uuid);
 						userTransactionRepository.save(ut);
 						return new ResponseEntity("Authorized", HttpStatus.OK);
 					} else {
