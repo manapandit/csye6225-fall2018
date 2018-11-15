@@ -5,6 +5,8 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,6 +15,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Properties;
 
 @Service
 public class AmazonClient {
@@ -20,14 +23,23 @@ public class AmazonClient {
 
     private AmazonS3 s3client;
 
+    @Autowired
+    Properties properties;
+    private String profile = System.getProperty("spring.profiles.active");
+
     //@Value("${amazonProperties.endpointUrl}")
-    private String endpointUrl="https://s3.us-east-1.amazonaws.com";
+    //private String endpointUrl="https://s3.us-east-1.amazonaws.com";
     //@Value("${amazonProperties.bucketName}")
-    private String bucketName="csye62250-fall2018-sharmadhr.me.csye6225.com";
+//    private String bucketName="csye62250-fall2018-sharmadhr.me.csye6225.com";
 //    @Value("${amazonProperties.accessKey}")
 //    private String accessKey;
 //    @Value("${amazonProperties.secretKey}")
 //    private String secretKey;
+    @Value("${amazonProperties.bucketName}")
+    private String bucketName;
+
+    @Value("${amazonProperties.endpointUrl}")
+    private String endpointUrl;
 
     @PostConstruct
     private void initializeAmazon() {
@@ -38,7 +50,7 @@ public class AmazonClient {
                 .withRegion("us-east-1")
                 .withCredentials(new DefaultAWSCredentialsProviderChain())
                 .build();
-    }
+    }   
 
     public String uploadFile(MultipartFile multipartFile) {
         String fileUrl = "";
