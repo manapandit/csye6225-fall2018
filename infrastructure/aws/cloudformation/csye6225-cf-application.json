@@ -121,7 +121,7 @@
       "HashKeyElementName" : {
             "Description" : "HashType PrimaryKey Name",
             "Type" : "String",
-            "Default" : "id",
+            "Default" : "EmailId",
             "AllowedPattern" : "[a-zA-Z0-9]*",
             "MinLength": "1",
             "MaxLength": "2048",
@@ -197,14 +197,43 @@
             "Ref": "Profiler"
         },
 
-           "UserData": {
+        "UserData": {
             "Fn::Base64": {
                 "Fn::Join": [
                     "\n",
                     [
-                        "#!/bin/bash -xe ",
-                        "yum -y update",
-                        "yum install ruby ntp python wget java-1.8.0-openjdk-devel -y",
+                        "#!/bin/bash",
+                        "sudo su",
+                        "yum update -y",
+                        "yum install httpd -y",
+                        "systemctl enable httpd.service",
+                        "systemctl start httpd.service",
+                        "#yum install epel-release –y",
+                        "#yum install python-pip –y",
+                        "#pip install awscli",
+                        "yum install ruby -y",
+                        "yum install wget -y",
+                        "yum install python -y",
+                        "sudo yum install unzip -y",
+                        "wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install",
+                        "chmod +x ./install",
+                        "./install auto",
+                        "service codedeploy-agent start",
+                        "mkdir -p /var/awslogs/etc/",
+                        "cd /var/awslogs/etc/",
+                        "wget https://s3.amazonaws.com/amazoncloudwatch-agent/linux/amd64/latest/AmazonCloudWatchAgent.zip",
+                        "unzip AmazonCloudWatchAgent.zip",
+                        "chmod +x install.sh",
+                        "sh install.sh",
+                        "mkdir -p /usr/share/collectd",
+                        "cd /usr/share/collectd",
+                        "touch types.db",
+                        "cd /opt/aws/amazon-cloudwatch-agent/bin/",
+                        "touch config.json",
+                        "echo '{\"agent\": {\"metrics_collection_interval\": 10,\"logfile\": \"/var/logs/amazon-cloudwatch-agent.log\"},\"logs\": {\"logs_collected\": {\"files\": {\"collect_list\": [{\"file_path\": \"/opt/tomcat/logs/catalina.out\",\"log_group_name\": \"csye6225_fall2018\",\"log_stream_name\": \"webapp\",\"timestamp_format\": \"%H:%M:%S %y %b %-d\"}]}}},\"metrics\": {\"metrics_collected\": {\"statsd\": {\"service_address\": \":8125\",\"metrics_collection_interval\": 10,\"metrics_aggregation_interval\": 0}}}}' >> config.json",
+                        "cd /opt/aws/amazon-cloudwatch-agent/bin",
+                        "./amazon-cloudwatch-agent-ctl -m ec2 -a fetch-config -c file:config.json -s",
+                        "yum install ruby ntp wget java-1.8.0-openjdk-devel -y",
                         "systemctl start ntpd",
                         "systemctl enable ntpd",
                         "groupadd tomcat",
@@ -212,13 +241,18 @@
                         "cd /tmp",
                         "wget http://apache.mirrors.pair.com/tomcat/tomcat-8/v8.5.34/bin/apache-tomcat-8.5.34.tar.gz",
                         "mkdir /opt/tomcat",
-                        "tar xvf apache-tomcat-8*tar.gz -C /opt/tomcat --strip-components=1",
+                        "sudo tar xvf apache-tomcat-8*tar.gz -C /opt/tomcat --strip-components=1",
                         "cd /opt/tomcat",
                         "chgrp -R tomcat /opt/tomcat",
                         "chmod -R g+r conf",
                         "chmod g+x conf",
                         "chown -R tomcat webapps/ work/ temp/ logs/",
-                        "cd /usr/lib/systemd/system",
+                        "cd /opt && sudo chown -R tomcat tomcat/",
+                        "#cd /usr/lib/systemd/system",
+                        "cd /opt/tomcat",
+                        "mkdir uploads",
+                        "chmod o+rwx uploads/",
+                        "cd /etc/systemd/system",
                         "touch tomcat.service",
                         "echo '[Unit]' > tomcat.service",
                         "echo 'Description=Apache Tomcat Web Application Container' >> tomcat.service",
@@ -229,7 +263,7 @@
                         "echo 'Environment=CATALINA_PID=/opt/tomcat/temp/tomcat.pid' >> tomcat.service",
                         "echo 'Environment=CATALINA_HOME=/opt/tomcat' >> tomcat.service",
                         "echo 'Environment=CATALINA_BASE=/opt/tomcat' >> tomcat.service",
-                        "echo 'Environment=\"CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC\"' >> tomcat.service",
+                        "#echo 'Environment=\"CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC\"' >> tomcat.service",
                         "echo 'Environment=\"JAVA_OPTS=-Djava.awt.headless=true -Djava.security.egd=file:/dev/./urandom\"' >> tomcat.service",
                         "echo 'ExecStart=/opt/tomcat/bin/startup.sh' >> tomcat.service",
                         "echo 'ExecStop=/bin/kill -15 $MAINPID' >> tomcat.service",
@@ -240,19 +274,37 @@
                         "echo 'Restart=always' >> tomcat.service",
                         "echo '[Install]' >> tomcat.service",
                         "echo 'WantedBy=multi-user.target' >> tomcat.service",
-                        "systemctl daemon-reload",
-                        "wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install \n",
-                        "chmod +x ./install \n",
-                        "./install auto \n",
-                        "#systemctl start cloudwatch.service",
-                        "#systemctl enable cloudwatch.service",
+                        "#systemctl daemon-reload",
+                        "cd /opt/tomcat/bin",
+                        "touch setenv.sh",
+                        "echo 'JAVA_OPTS=\"-Djava.net.preferIPv4Stack=true -Djava.net.preferIPv4Addresses=true\"' >> setenv.sh",
+                        "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.profiles.active=Dev\"' >> setenv.sh",
+                        {
+                            "Fn::Join": [
+                                "",
+                                [
+                                    "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.url=jdbc:mysql://",
+                                    {
+                                        "Fn::GetAtt": [
+                                            "MasterDB",
+                                            "Endpoint.Address"
+                                        ]
+                                    },
+                                    ":3306/csye6225\"' >> setenv.sh \n"
+                                ]
+                            ]
+                        },
+                        "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.username=csye6225master\"'  >> setenv.sh",
+                        "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.password=csye6225password\"'  >> setenv.sh",
+                        "#systemctl daemon-reload",
+                        "systemctl start amazon-cloudwatch-agent.service",
+                        "systemctl stop amazon-cloudwatch-agent.service",
+                        "systemctl restart amazon-cloudwatch-agent.service",
                         "systemctl enable tomcat.service",
                         "systemctl start tomcat.service",
-                        "sudo yum install mysql-server",
-                        "sudo systemctl start mysqld",
-                        "sudo yum update",
-                        "sudo service mysqld restart",
-                        "sudo mysql -u root -h ${RDSInstance.Endpoint.Address} -p root"
+                        "yum install mariadb mariadb-server -y",
+                        "systemctl enable mariadb.service",
+                        "systemctl start mariadb.service"
                     ]
                 ]
             }
@@ -374,6 +426,10 @@
               "ReadCapacityUnits" : {"Ref" : "ReadCapacityUnits"},
               "WriteCapacityUnits" : {"Ref" : "WriteCapacityUnits"}
             },
+            "TimeToLiveSpecification": {
+                "AttributeName": "TimeToLive",
+                "Enabled": "TRUE"
+            },
 
             "TableName" : "csye6225"           
           }
@@ -413,8 +469,37 @@
                 "PublicIp"
             ]
         }
+    },
+    "JDBCConnectionString": {
+            "Description": "JDBC connection string for the database",
+            "Value": {
+                "Fn::Join": [
+                    "",
+                    [
+                        "jdbc:mysql://",
+                        {
+                            "Fn::GetAtt": [
+                                "MasterDB",
+                                "Endpoint.Address"
+                            ]
+                        },
+                        ":",
+                        {
+                            "Fn::GetAtt": [
+                                "MasterDB",
+                                "Endpoint.Port"
+                            ]
+                        },
+                        "/",
+                        {
+                            "Ref": "MasterDB"
+                        }
+                    ]
+                ]
+            }
+        }
     }
 }
-}
+
  
 
