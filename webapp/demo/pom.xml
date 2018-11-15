@@ -88,7 +88,7 @@
 			<version>1.11.133</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.timgroup/java-statsd-client -->
+		 <!--https://mvnrepository.com/artifact/com.timgroup/java-statsd-client-->
 		<dependency>
 			<groupId>com.timgroup</groupId>
 			<artifactId>java-statsd-client</artifactId>
