@@ -5,8 +5,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.sns.model.PublishResult;
+import demo.Services.ResponseService;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,11 +24,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-
+import demo.Services.ResponseService;
+import demo.Services.UserService;
 import demo.models.User;
 import demo.models.UserTransaction;
 import demo.repositories.UserRepository;
 import demo.repositories.UserTransactionRepository;
+import com.timgroup.statsd.StatsDClient;
+import com.amazonaws.services.sns.model.PublishRequest;
+import com.amazonaws.services.sns.AmazonSNSClient;
+import com.amazonaws.auth.ClasspathPropertiesFileCredentialsProvider;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.sns.model.CreateTopicRequest;
+import com.amazonaws.services.sns.model.CreateTopicResult;
 
 @RestController
 @PropertySource("classpath:application.properties")
@@ -35,9 +49,18 @@ public class UserController {
 	@Autowired
 	UserTransactionRepository userTransactionRepository;
 
-    @Autowired
-    Properties properties;
-    private String profile = System.getProperty("spring.profiles.active=Dev");
+	@Autowired
+	StatsDClient statsDClient;
+
+	@Autowired
+    ResponseService responseService;
+
+	@Autowired
+	UserService userService;
+
+	@Autowired
+	Properties properties;
+	private String profile = System.getProperty("spring.profiles.active=Dev");
 
 
 	// -----------------------------------Fetching data for time ----------------------------------------------------//
@@ -76,18 +99,18 @@ public class UserController {
 
 	@PostMapping("/user/register")
 	public ResponseEntity createUser(@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth,
-			@RequestBody User userJson) throws ArrayIndexOutOfBoundsException, InvocationTargetException {
+									 @RequestBody User userJson) throws ArrayIndexOutOfBoundsException, InvocationTargetException {
 
 		byte[] bytes = Base64.decodeBase64(auth.split(" ")[1]);
 		String uNamePwd[] = new String(bytes).split(":");
 
 //		try {
 
-			//Optional<Integer> optionalUserAuth = userRepository.findIdByUserName(uNamePwd[0]);
+		//Optional<Integer> optionalUserAuth = userRepository.findIdByUserName(uNamePwd[0]);
 
 
-			//User u = userRepository.findById(optionalUserAuth.get()).get();
-			User u = new User();
+		//User u = userRepository.findById(optionalUserAuth.get()).get();
+		User u = new User();
 //
 //			String abc = uNamePwd[0].toString();
 //			String def = uNamePwd[1].toString();
@@ -98,15 +121,14 @@ public class UserController {
 //				if (u.getEmail().equals(abc) && BCrypt.checkpw(def, u.getPassword()) == true) {
 		//	Optional<Integer> optionalUser = userRepository.findIdByUserName(userJson.getEmail());
 //			if (!optionalUser.isPresent()) {
-				userJson.setPassword(BCrypt.hashpw(userJson.getPassword(), BCrypt.gensalt(12))); // salting
-				// password
-				userRepository.save(userJson);
-				return new ResponseEntity(userJson, HttpStatus.OK);
+		userJson.setPassword(BCrypt.hashpw(userJson.getPassword(), BCrypt.gensalt(12))); // salting
+		// password
+		userRepository.save(userJson);
+		return new ResponseEntity(userJson, HttpStatus.OK);
 //			} else {
 //				return new ResponseEntity("User with the given email already exists!", HttpStatus.CONFLICT);
 //			}
 		//}
-
 
 
 //		} catch (Exception ex) {
@@ -122,7 +144,7 @@ public class UserController {
 
 	@PostMapping("/transaction")
 	public ResponseEntity createUserTransaction(@RequestBody UserTransaction ut,
-			@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth)
+												@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth)
 			throws ArrayIndexOutOfBoundsException, InvocationTargetException {
 
 		byte[] bytes = Base64.decodeBase64(auth.split(" ")[1]);
@@ -169,9 +191,7 @@ public class UserController {
 						return new ResponseEntity("Not authorized", HttpStatus.UNAUTHORIZED);
 					}
 
-				}
-
-				else {
+				} else {
 					return new ResponseEntity("CHK CREDENTIALS", HttpStatus.UNAUTHORIZED);
 				}
 			}
@@ -188,8 +208,8 @@ public class UserController {
 	// -------------------------------------------- update transaction	// ---------------------------------------------------//
 	@PutMapping("/transaction/{id}")
 	public ResponseEntity put(@PathVariable String id,
-			@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth,
-			@RequestBody UserTransaction ut) throws ArrayIndexOutOfBoundsException, InvocationTargetException {
+							  @RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth,
+							  @RequestBody UserTransaction ut) throws ArrayIndexOutOfBoundsException, InvocationTargetException {
 
 		byte[] bytes = Base64.decodeBase64(auth.split(" ")[1]);
 		String uNamePwd[] = new String(bytes).split(":");
@@ -256,7 +276,7 @@ public class UserController {
 	// ---------------------------------------------------get transaction -------------------------------------------------//
 	@GetMapping("/transaction")
 	public ResponseEntity getAll(@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth,
-			HttpServletResponse response)
+								 HttpServletResponse response)
 			throws JSONException, JsonProcessingException, ArrayIndexOutOfBoundsException, InvocationTargetException {
 
 		byte[] bytes = Base64.decodeBase64(auth.split(" ")[1]);
@@ -318,7 +338,7 @@ public class UserController {
 	// --------------------------------------- delete transaction ---------------------------------------------------//
 	@DeleteMapping("/transaction/{id}")
 	public ResponseEntity delete(@PathVariable String id,
-			@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth)
+								 @RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth)
 			throws JSONException, JsonProcessingException, ArrayIndexOutOfBoundsException, InvocationTargetException {
 
 		byte[] bytes = Base64.decodeBase64(auth.split(" ")[1]);
@@ -347,12 +367,11 @@ public class UserController {
 					if (u.getEmail().equals(abc) && BCrypt.checkpw(def, u.getPassword()) == true) {
 
 						user_id = optionalUserAuth.get(); // 178
-						Optional<String> opt = userTransactionRepository.findUid(id,user_id);
-						if(opt.isPresent()){
+						Optional<String> opt = userTransactionRepository.findUid(id, user_id);
+						if (opt.isPresent()) {
 							userTransactionRepository.deleteTransaction(id, user_id);
 							return new ResponseEntity("Deleted", HttpStatus.ACCEPTED);
-						}
-						else{
+						} else {
 							return new ResponseEntity("Not authorized", HttpStatus.UNAUTHORIZED);
 						}
 					} else
@@ -368,9 +387,9 @@ public class UserController {
 	}
 
 	// -------------------------------------------- delete transaction ends here -------------------------------------------//
-    // -----------------------------------------------------------Attachement-----------------------------------------------//
+	// -----------------------------------------------------------Attachement-----------------------------------------------//
 
-    // -----------------------------------------------Post Attachment-------------------------------------------------------//
+	// -----------------------------------------------Post Attachment-------------------------------------------------------//
 
 //   private final String File_Location = "/home/dhruvsharma/Downloads/demo/uploads";
 //
@@ -425,6 +444,23 @@ public class UserController {
 //
 //			//return "Hello!";
 //		}
+
+
+	//---------------------------------------------------------Reset Password-------------------------------------------------
+
+    @GetMapping("/user/reset")
+    public ResponseEntity resetPassword(@RequestParam("EmailId")String emailId){
+
+        statsDClient.increment("user.reset.password");
+
+        if(emailId.isEmpty()){
+            return responseService.generateResponse(HttpStatus.UNAUTHORIZED,
+                    "{\"Response\":\"Please enter email\"}");
+        }
+
+        return userService.resetPassword(emailId);
+
+    }
 
     }
 
