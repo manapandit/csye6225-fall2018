@@ -59,7 +59,7 @@ public class UserService {
 
             PublishRequest publishRequest = new PublishRequest(topicName, msg);
             PublishResult publishResult = snsClient.publish(publishRequest);
-
+            System.out.print("*******************" + publishRequest);
             return ResponseEntity.status(HttpStatus.OK)
                     .body("{\"Response\":\"Check your email for reset password link\"}");
 

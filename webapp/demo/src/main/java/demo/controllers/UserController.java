@@ -442,7 +442,7 @@ public class UserController {
 
     @GetMapping("/user/reset")
     public ResponseEntity resetPassword(@RequestParam("EmailId")String emailId){
-
+		System.out.print("*****************" + emailId);
         statsDClient.increment("user.reset.password");
 
         if(emailId.isEmpty()){
