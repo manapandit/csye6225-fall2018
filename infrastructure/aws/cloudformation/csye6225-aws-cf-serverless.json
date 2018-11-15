@@ -1,0 +1,90 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "AWS CloudFormation Lambda",
+    "Parameters": {
+        "Role": {
+            "Description": "lambdaServiceRole for lambda",
+            "Type": "String"
+        },
+        "S3Bucket": {
+            "Description": "S3 bucket that name",
+            "Type": "String"
+        },
+        "S3Key": {
+            "Description": "TZip file",
+            "Type": "String"
+        },
+        "Mail": {
+            "Description": "Name of Lambda zip file",
+            "Type": "String"
+        }
+    },
+    "Resources": {
+        "LambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "Code": {
+                    "S3Bucket": {
+                        "Ref": "S3Bucket"
+                    },
+                    "S3Key": {
+                        "Ref": "S3Key"
+                    }
+                },
+                "MemorySize": "256",
+                "FunctionName":"Demo",
+                "Environment": {
+                    "Variables": {
+                        "From_Addr": {
+                            "Ref": "Mail"
+                        },
+                        "Func_Name": "handleRequest",
+                        "TableName": "csye6225"
+                    }
+                },
+                    "Handler": "com.example.demo.forgotpassword::handleRequest",
+                    "Role": {
+                        "Ref": "Role"
+                    },
+                    "Runtime": "java8",
+                    "Timeout": "30",
+                    "TracingConfig": {
+                        "Mode": "Active"
+                    }
+                }
+        },
+        "SNStopic": {
+            "Type": "AWS::SNS::Topic",
+            "Properties": {
+                "TopicName": "Sampletopic",
+                "Subscription": [
+                    {
+                        "Endpoint": {
+                            "Fn::GetAtt": [
+                                "LambdaFunction",
+                                "Arn"
+                            ]
+                        },
+                        "Protocol": "lambda"
+                    }
+                ]
+            }
+        },
+           "LambdaInvokePermission": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+                "FunctionName": {
+                    "Fn::GetAtt": [
+                        "LambdaFunction",
+                        "Arn"
+                    ]
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "sns.amazonaws.com",
+                "SourceArn": {
+                    "Ref": "SNStopic"
+                     }
+                }
+            }
+        }
+    }
