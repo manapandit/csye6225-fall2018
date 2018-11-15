@@ -335,7 +335,7 @@ public class UserController {
 
 		byte[] bytes = Base64.decodeBase64(auth.split(" ")[1]);
 		String uNamePwd[] = new String(bytes).split(":");
-
+		//statsDClient.increment("transaction.update");
 		try {
 
 			String username1 = uNamePwd[0];
