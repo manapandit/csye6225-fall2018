@@ -22,7 +22,7 @@ echo ""
 
 export TravisUser=Travis
 create=$(aws cloudformation create-stack --stack-name $Stack --template-body file://csye6225-cf-cicd.json --capabilities CAPABILITY_NAMED_IAM \
-  --parameters ParameterKey=DeployBucket,ParameterValue=code-deploy.$hostedZoneName.csye6225.com ParameterKey=TravisUser,ParameterValue=$TravisUser)
+  --parameters ParameterKey=DeployBucket,ParameterValue=code-deploy$hostedZoneName.csye6225.com ParameterKey=TravisUser,ParameterValue=$TravisUser)
 
 
 if [ $? -ne "0" ]
