@@ -47,7 +47,7 @@ deploy:
     wait-until-deployed: true
     acl: public_read
     on:
-      branch: master
+      branch: Assignment7-8
       
   - provider: codedeploy
     access_key_id: $access_key_id
@@ -60,4 +60,4 @@ deploy:
     secret_access_key: $secret_access_key
     wait-until-deployed: true
     on:
-      branch: master
+      branch: Assignment7-8
