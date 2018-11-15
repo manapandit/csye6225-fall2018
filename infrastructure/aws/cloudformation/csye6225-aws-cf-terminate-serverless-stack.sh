@@ -10,6 +10,16 @@ else
   echo "Deleting the stack $Stack"
 fi
 
+#Empty S3 bucket
+s3BucketName = $(aws s3api list-buckets --query "Buckets[1].Name" --output text)
+aws s3 rm s3://${s3Bucketname} --recursive
+
+
+#Delete S3 bucket
+#aws s3 rb s3://S3Bucket --force 
+echo "Deleting S3 bucket"
+
+#aws s3api delete-bucket --bucket S3Bucket --region us-east-1
 
 Delete=$(aws cloudformation delete-stack --stack-name $Stack)
 if [ $? -ne "0" ]
@@ -21,7 +31,7 @@ else
   echo "Deletion in Progress....."
 fi
 
-Complete=$(aws cloudformation wait stack-delete-complete --stack-name $StackName)
+Complete=$(aws cloudformation wait stack-delete-complete --stack-name $Stack)
 if [[ -z "$Complete" ]]
 then
   echo "$Stack stack is deleted successfully"

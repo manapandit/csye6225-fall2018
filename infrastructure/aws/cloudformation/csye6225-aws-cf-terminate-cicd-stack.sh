@@ -11,8 +11,8 @@ else
 fi
 
 #Empty S3 bucket
-s3BucketName = $(aws s3api list-buckets --query "Buckets[2].Name" --output text)
-aws s3 rm s3://${s3Bucketname} --recursive
+#s3BucketName = $(aws s3api list-buckets --query "Buckets[2].Name" --output text)
+#aws s3 rm s3://${s3Bucketname} --recursive
 
 
 #Delete S3 bucket
@@ -20,6 +20,14 @@ aws s3 rm s3://${s3Bucketname} --recursive
 echo "Deleting S3 bucket"
 
 #aws s3api delete-bucket --bucket S3Bucket --region us-east-1
+
+#echo "Deleting S3 bucket............"
+bucketname=`aws cloudformation describe-stacks --stack-name ${stack_name} | jq -r '.Stacks[].Parameters[] | select(.ParameterKey == "s3domain").ParameterValue' `
+if [ -n "$bucketname" ]; then
+  aws s3 rm s3://${bucketname} --recursive
+else
+  echo "s3 bucket is not available for this stack...."
+fi
 
 Delete=$(aws cloudformation delete-stack --stack-name $Stack)
 if [ $? -ne "0" ]
