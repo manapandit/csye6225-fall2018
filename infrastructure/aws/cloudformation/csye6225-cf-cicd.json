@@ -1,7 +1,7 @@
 
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "AWS CloudFormation Sample Template for CI/CD",
+    "Description": "AWS CloudFormation for CI/CD",
     "Parameters": {
         "DeployBucket": {
             "Description": "The database instance type",
@@ -37,6 +37,11 @@
                                     ]
                                 ]
                             }
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": "lambda:*",
+                            "Resource": "*"
                         }
                     ]
                 },
@@ -163,7 +168,25 @@
                                     ]
                                 ]
                             }
-                        }
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": "sns:*",
+                            "Resource": "*"
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "cloudwatch:PutMetricData",
+                                "ec2:DescribeTags",
+                                "logs:PutLogEvents",
+                                "logs:DescribeLogStreams",
+                                "logs:DescribeLogGroups",
+                                "logs:CreateLogStream",
+                                "logs:CreateLogGroup"
+                            ],
+                            "Resource": "*"
+                        } 
                     ]
                 },
                 "Roles": [
@@ -205,12 +228,167 @@
                     {
                         "Key": "Name",
                         "Type": "KEY_AND_VALUE",
-                        "Value": "appstack-csye6225-EC2"
+                        "Value": {
+                            "Fn::Join": [
+                                "",
+                                [
+                                    {
+                                        "Ref": "AWS::StackName"
+                                    },
+                                    "-csye6225-ec2"
+                                ]
+                            ]
+                        }
                     }
                 ],
                 "ServiceRoleArn": {
                     "Fn::GetAtt": [
                         "CodeDeployServiceRole",
+                        "Arn"
+                    ]
+                }
+            }
+        },
+
+        "CodeDeployLambdaServiceRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "RoleName": "CodeDeployLambdaServiceRole",
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "codedeploy.amazonaws.com"
+                                ]
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                },
+                "ManagedPolicyArns": [
+                    "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRoleForLambda"
+                ],
+                "Path": "/",
+                "Policies": [
+                    {
+                        "PolicyName": "Ec2_Cloudwatch",
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "logs:CreateLogGroup",
+                                        "logs:CreateLogStream",
+                                        "logs:PutLogEvents",
+                                        "logs:DescribeLogStreams"
+                                    ],
+                                    "Resource": [
+                                        "arn:aws:logs:::*"
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "PolicyName": "Ec2_sns",
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": "sns:*",
+                                    "Resource": "*"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "lambdaServiceRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "RoleName": "lambda_Dynamodb_SES",
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": "lambda.amazonaws.com"
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                },
+                "ManagedPolicyArns": [
+                    "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+                    "arn:aws:iam::aws:policy/AmazonSESFullAccess",
+                    "arn:aws:iam::aws:policy/AWSLambdaFullAccess",
+                    "arn:aws:iam::aws:policy/AmazonSNSFullAccess"
+                ],
+                "Path": "/",
+                "Policies": [
+                    {
+                        "PolicyName": "lambda_DB",
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "logs:CreateLogGroup",
+                                        "logs:CreateLogStream",
+                                        "logs:PutLogEvents"
+                                    ],
+                                    "Resource": "arn:aws:logs:::*"
+                                },
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "dynamodb:*"
+                                    ],
+                                    "Resource": [
+                                        "arn:aws:dynamodb:us-east-1::table/"
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+
+        "CodeDeployApplicationforLambda": {
+            "Type": "AWS::CodeDeploy::Application",
+            "Properties": {
+                "ApplicationName": "CSYE6225CodeDeploy-Lambda",
+                "ComputePlatform": "Lambda"
+            }
+        },
+        "DeploymentGroupforLambda": {
+            "Type": "AWS::CodeDeploy::DeploymentGroup",
+            "Properties": {
+                "ApplicationName": {
+                    "Ref": "CodeDeployApplicationforLambda"
+                },
+                "DeploymentGroupName": "aws-lambda",
+                "DeploymentConfigName": "CodeDeployDefault.LambdaAllAtOnce",
+                "DeploymentStyle": {
+                    "DeploymentType": "BLUE_GREEN",
+                    "DeploymentOption": "WITH_TRAFFIC_CONTROL"
+                },
+                "ServiceRoleArn": {
+                    "Fn::GetAtt": [
+                        "CodeDeployLambdaServiceRole",
                         "Arn"
                     ]
                 }
