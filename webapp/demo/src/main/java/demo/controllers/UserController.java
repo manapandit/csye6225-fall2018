@@ -5,12 +5,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import javax.servlet.http.HttpServletRequest;
+
 import javax.servlet.http.HttpServletResponse;
 
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.sns.model.PublishResult;
+import com.timgroup.statsd.StatsDClient;
 import demo.Services.ResponseService;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.json.JSONException;
@@ -24,20 +22,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import demo.Services.ResponseService;
 import demo.Services.UserService;
 import demo.models.User;
 import demo.models.UserTransaction;
 import demo.repositories.UserRepository;
 import demo.repositories.UserTransactionRepository;
-import com.timgroup.statsd.StatsDClient;
-import com.amazonaws.services.sns.model.PublishRequest;
-import com.amazonaws.services.sns.AmazonSNSClient;
-import com.amazonaws.auth.ClasspathPropertiesFileCredentialsProvider;
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.sns.model.CreateTopicRequest;
-import com.amazonaws.services.sns.model.CreateTopicResult;
+
 
 @RestController
 @PropertySource("classpath:application.properties")
