@@ -53,7 +53,9 @@ public class UserService {
                 if (topicNames.getTopicArn().contains("Sampletopic")) {
                     topicName = topicNames.getTopicArn();
                 }
+
             }
+            System.out.print("*******************" + topicName);
 
             PublishRequest publishRequest = new PublishRequest(topicName, msg);
             PublishResult publishResult = snsClient.publish(publishRequest);
