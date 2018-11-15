@@ -4,7 +4,7 @@ package demo.models;
 import javax.persistence.*;
 
 @Entity
-@Table
+@Table(name = "UserTransaction")
 public class UserTransaction {
 	@Id
 	@Column(name = "id", length = 40)
@@ -28,9 +28,6 @@ public class UserTransaction {
 	private User user;
 
 	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Attachments attachments;
-
-	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Reciept reciept;
 
 	public User getUser() {
@@ -39,14 +36,6 @@ public class UserTransaction {
 
 	public void setUser(User user) {
 		this.user = user;
-	}
-
-	public Attachments getAttachments() {
-		return attachments;
-	}
-
-	public void setAttachments(Attachments attachments) {
-		this.attachments = attachments;
 	}
 
 	public Reciept getReciept() {

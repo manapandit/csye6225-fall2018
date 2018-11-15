@@ -1,40 +1,46 @@
 package demo.controllers;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.*;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import demo.models.Attachments;
-import demo.repositories.AttachmentRepository;
+
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.sns.model.PublishResult;
+import demo.Services.ResponseService;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import demo.Services.ResponseService;
+import demo.Services.UserService;
 import demo.models.User;
 import demo.models.UserTransaction;
 import demo.repositories.UserRepository;
 import demo.repositories.UserTransactionRepository;
-import org.springframework.web.multipart.MultipartFile;
+import com.timgroup.statsd.StatsDClient;
+import com.amazonaws.services.sns.model.PublishRequest;
+import com.amazonaws.services.sns.AmazonSNSClient;
+import com.amazonaws.auth.ClasspathPropertiesFileCredentialsProvider;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.sns.model.CreateTopicRequest;
+import com.amazonaws.services.sns.model.CreateTopicResult;
 
 @RestController
-// @CrossOrigin(origins = "*", maxAge = 3600)
+@PropertySource("classpath:application.properties")
 public class UserController {
 
 	@Autowired
@@ -43,11 +49,18 @@ public class UserController {
 	@Autowired
 	UserTransactionRepository userTransactionRepository;
 
-
+	@Autowired
+	StatsDClient statsDClient;
 
 	@Autowired
-    AttachmentRepository attachmentRepository;
+    ResponseService responseService;
 
+	@Autowired
+	UserService userService;
+
+	@Autowired
+	Properties properties;
+	private String profile = System.getProperty("spring.profiles.active=Dev");
 
 
 	// -----------------------------------Fetching data for time ----------------------------------------------------//
@@ -55,6 +68,7 @@ public class UserController {
 	@GetMapping("/demo/time")
 	public ResponseEntity<String> getTime(@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth)
 			throws JSONException {
+		System.out.println("First Phase");
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 		LocalDateTime now = LocalDateTime.now();
 		JSONObject bodyObject = new JSONObject("{}");
@@ -85,47 +99,42 @@ public class UserController {
 
 	@PostMapping("/user/register")
 	public ResponseEntity createUser(@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth,
-			@RequestBody User userJson) throws ArrayIndexOutOfBoundsException, InvocationTargetException {
+									 @RequestBody User userJson) throws ArrayIndexOutOfBoundsException, InvocationTargetException {
 
 		byte[] bytes = Base64.decodeBase64(auth.split(" ")[1]);
 		String uNamePwd[] = new String(bytes).split(":");
 
-		try {
+//		try {
 
-			Optional<Integer> optionalUserAuth = userRepository.findIdByUserName(uNamePwd[0]);
-			if (optionalUserAuth.isPresent() || optionalUserAuth.get() != 0
-					|| !optionalUserAuth.equals(Optional.empty())) {
-
-				User u = userRepository.findById(optionalUserAuth.get()).get();
-
-				String abc = uNamePwd[0].toString();
-				String def = uNamePwd[1].toString();
-
-				String encode = BCrypt.hashpw(def, BCrypt.gensalt(12));
-				System.out.println("encode is" + encode);
-
-				if (u.getEmail().equals(abc) && BCrypt.checkpw(def, u.getPassword()) == true) {
-					Optional<Integer> optionalUser = userRepository.findIdByUserName(userJson.getEmail());
-					if (!optionalUser.isPresent()) {
-						userJson.setPassword(BCrypt.hashpw(userJson.getPassword(), BCrypt.gensalt(12))); // salting
-																											// password
-						userRepository.save(userJson);
-						return new ResponseEntity(userJson, HttpStatus.OK);
-					} else {
-						return new ResponseEntity("User with the given email already exists!", HttpStatus.CONFLICT);
-					}
-				} else {
-					return new ResponseEntity(	"Not authorized", HttpStatus.UNAUTHORIZED);
-				}
-			} else {
-				return new ResponseEntity("Not authorized", HttpStatus.UNAUTHORIZED);
-			}
+		//Optional<Integer> optionalUserAuth = userRepository.findIdByUserName(uNamePwd[0]);
 
 
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return new ResponseEntity("Not authorized", HttpStatus.UNAUTHORIZED);
+		//User u = userRepository.findById(optionalUserAuth.get()).get();
+		User u = new User();
+//
+//			String abc = uNamePwd[0].toString();
+//			String def = uNamePwd[1].toString();
+
+//			String encode = BCrypt.hashpw(def, BCrypt.gensalt(12));
+//			System.out.println("encode is" + encode);
+
+//				if (u.getEmail().equals(abc) && BCrypt.checkpw(def, u.getPassword()) == true) {
+		//	Optional<Integer> optionalUser = userRepository.findIdByUserName(userJson.getEmail());
+//			if (!optionalUser.isPresent()) {
+		userJson.setPassword(BCrypt.hashpw(userJson.getPassword(), BCrypt.gensalt(12))); // salting
+		// password
+		userRepository.save(userJson);
+		return new ResponseEntity(userJson, HttpStatus.OK);
+//			} else {
+//				return new ResponseEntity("User with the given email already exists!", HttpStatus.CONFLICT);
+//			}
+		//}
+
+
+//		} catch (Exception ex) {
+//			ex.printStackTrace();
+//		}
+//		return new ResponseEntity("Not authorized", HttpStatus.UNAUTHORIZED);
 
 	}
 
@@ -135,7 +144,7 @@ public class UserController {
 
 	@PostMapping("/transaction")
 	public ResponseEntity createUserTransaction(@RequestBody UserTransaction ut,
-			@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth)
+												@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth)
 			throws ArrayIndexOutOfBoundsException, InvocationTargetException {
 
 		byte[] bytes = Base64.decodeBase64(auth.split(" ")[1]);
@@ -175,15 +184,14 @@ public class UserController {
 						u.setPassword(password);
 						ut.setId(uuid);
 						ut.setUser(u);
+						System.out.print("#####################################" + uuid);
 						userTransactionRepository.save(ut);
 						return new ResponseEntity("Authorized", HttpStatus.OK);
 					} else {
 						return new ResponseEntity("Not authorized", HttpStatus.UNAUTHORIZED);
 					}
 
-				}
-
-				else {
+				} else {
 					return new ResponseEntity("CHK CREDENTIALS", HttpStatus.UNAUTHORIZED);
 				}
 			}
@@ -200,8 +208,8 @@ public class UserController {
 	// -------------------------------------------- update transaction	// ---------------------------------------------------//
 	@PutMapping("/transaction/{id}")
 	public ResponseEntity put(@PathVariable String id,
-			@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth,
-			@RequestBody UserTransaction ut) throws ArrayIndexOutOfBoundsException, InvocationTargetException {
+							  @RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth,
+							  @RequestBody UserTransaction ut) throws ArrayIndexOutOfBoundsException, InvocationTargetException {
 
 		byte[] bytes = Base64.decodeBase64(auth.split(" ")[1]);
 		String uNamePwd[] = new String(bytes).split(":");
@@ -268,7 +276,7 @@ public class UserController {
 	// ---------------------------------------------------get transaction -------------------------------------------------//
 	@GetMapping("/transaction")
 	public ResponseEntity getAll(@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth,
-			HttpServletResponse response)
+								 HttpServletResponse response)
 			throws JSONException, JsonProcessingException, ArrayIndexOutOfBoundsException, InvocationTargetException {
 
 		byte[] bytes = Base64.decodeBase64(auth.split(" ")[1]);
@@ -330,7 +338,7 @@ public class UserController {
 	// --------------------------------------- delete transaction ---------------------------------------------------//
 	@DeleteMapping("/transaction/{id}")
 	public ResponseEntity delete(@PathVariable String id,
-			@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth)
+								 @RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth)
 			throws JSONException, JsonProcessingException, ArrayIndexOutOfBoundsException, InvocationTargetException {
 
 		byte[] bytes = Base64.decodeBase64(auth.split(" ")[1]);
@@ -359,12 +367,11 @@ public class UserController {
 					if (u.getEmail().equals(abc) && BCrypt.checkpw(def, u.getPassword()) == true) {
 
 						user_id = optionalUserAuth.get(); // 178
-						Optional<String> opt = userTransactionRepository.findUid(id,user_id);
-						if(opt.isPresent()){
+						Optional<String> opt = userTransactionRepository.findUid(id, user_id);
+						if (opt.isPresent()) {
 							userTransactionRepository.deleteTransaction(id, user_id);
 							return new ResponseEntity("Deleted", HttpStatus.ACCEPTED);
-						}
-						else{
+						} else {
 							return new ResponseEntity("Not authorized", HttpStatus.UNAUTHORIZED);
 						}
 					} else
@@ -380,63 +387,80 @@ public class UserController {
 	}
 
 	// -------------------------------------------- delete transaction ends here -------------------------------------------//
-    // -----------------------------------------------------------Attachement-----------------------------------------------//
+	// -----------------------------------------------------------Attachement-----------------------------------------------//
 
-    // -----------------------------------------------Post Attachment-------------------------------------------------------//
+	// -----------------------------------------------Post Attachment-------------------------------------------------------//
 
-   private final String File_Location = "/home/dhruvsharma/Downloads/demo/uploads";
+//   private final String File_Location = "/home/dhruvsharma/Downloads/demo/uploads";
+//
+//    @RequestMapping(value="/transaction/{id}/attachments", method=RequestMethod.POST, consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public String uploadAttachment(@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth, @PathVariable String id,
+//                                                        @RequestParam("file")MultipartFile file)throws ArrayIndexOutOfBoundsException, InvocationTargetException  {
+//
+//
+//        try {
+//            UserTransaction ut = userTransactionRepository.findAllIDByUserId(id);
+//
+//            String fileName = file.getOriginalFilename();
+//            File f = new File(File_Location + File.separator + fileName);
+//            file.transferTo(f);
+//            Optional<String> optionalUserAuth = userTransactionRepository.findTransactionId(id);
+//
+//            //int i = Integer.parseInt(id);
+//				if(optionalUserAuth.isPresent() || !optionalUserAuth.equals(Optional.empty())) {
+//					String uuid = UUID.randomUUID().toString();
+//					// Attachments attachments = new Attachments();
+//					Attachments attachments = new Attachments();
+//					attachments.setId(uuid);
+//					attachments.setFileName(fileName);
+//					// attachments.setFileLocation(File_Location);
+//
+//					HttpHeaders headers = new HttpHeaders();
+//					headers.add("File Uploaded Successfully!!", fileName);
+//					attachments.setFileLocation(File_Location + "/" + fileName);
+//					attachmentRepository.save(attachments);
+//					ut.setAttachments(attachments);
+//					return "File uploaded Successfully " + File_Location + "/" + fileName;
+//
+//				}
+//				else{
+//					return "Invalid Transaction ID";
+//				}
+//
+//        }catch(IOException ex) {
+//
+//            return "Upload failed";
+//        }
+//
+//        }
+//
+//        //-----------------------------------------------get Attachments--------------------------------------------------------//
+//
+//		@RequestMapping(value="/demo/test", method = RequestMethod.GET )
+//		public void testMethod()
+//		{
+//			System.out.println("/demo/test");
+//            System.out.println("/demo/testlineadded");
+//
+//			//return "Hello!";
+//		}
 
-    @RequestMapping(value="/transaction/{id}/attachments", method=RequestMethod.POST, consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String uploadAttachment(@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth, @PathVariable String id,
-                                                        @RequestParam("file")MultipartFile file)throws ArrayIndexOutOfBoundsException, InvocationTargetException  {
 
+	//---------------------------------------------------------Reset Password-------------------------------------------------
 
-        try {
-            UserTransaction ut = userTransactionRepository.findAllIDByUserId(id);
+    @GetMapping("/user/reset")
+    public ResponseEntity resetPassword(@RequestParam("EmailId")String emailId){
 
-            String fileName = file.getOriginalFilename();
-            File f = new File(File_Location + File.separator + fileName);
-            file.transferTo(f);
-            Optional<String> optionalUserAuth = userTransactionRepository.findTransactionId(id);
+        statsDClient.increment("user.reset.password");
 
-            //int i = Integer.parseInt(id);
-				if(optionalUserAuth.isPresent() || !optionalUserAuth.equals(Optional.empty())) {
-					String uuid = UUID.randomUUID().toString();
-					// Attachments attachments = new Attachments();
-					Attachments attachments = new Attachments();
-					attachments.setId(uuid);
-					attachments.setFileName(fileName);
-					// attachments.setFileLocation(File_Location);
-
-					HttpHeaders headers = new HttpHeaders();
-					headers.add("File Uploaded Successfully!!", fileName);
-					attachments.setFileLocation(File_Location + "/" + fileName);
-					attachmentRepository.save(attachments);
-					ut.setAttachments(attachments);
-					return "File uploaded Successfully " + File_Location + "/" + fileName;
-
-				}
-				else{
-					return "Invalid Transaction ID";
-				}
-
-        }catch(IOException ex) {
-
-            return "Upload failed";
+        if(emailId.isEmpty()){
+            return responseService.generateResponse(HttpStatus.UNAUTHORIZED,
+                    "{\"Response\":\"Please enter email\"}");
         }
 
-        }
+        return userService.resetPassword(emailId);
 
-        //-----------------------------------------------get Attachments--------------------------------------------------------//
-
-		@RequestMapping(value="/demo/test", method = RequestMethod.GET )
-		public void testMethod()
-		{
-			System.out.println("/demo/test");
-            System.out.println("/demo/testlineadded");
-
-			//return "Hello!";
-		}
+    }
 
     }
 
