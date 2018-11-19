@@ -11,7 +11,7 @@
 # Dependencies
 ##### 1 MySQL
 ##### 2 Maven 3
-##### 3 Bcrypt
+##### 3 Bcrypt Salt
 ##### 4 Spring-Boot-Starter-Security
 
 # Build and Deploying Application Locally and dev
