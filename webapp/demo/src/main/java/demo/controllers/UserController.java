@@ -93,7 +93,7 @@ public class UserController {
 
 		byte[] bytes = Base64.decodeBase64(auth.split(" ")[1]);
 		String uNamePwd[] = new String(bytes).split(":");
-		tatsDClient.increment("user.create");
+		statsDClient.increment("user.create");
 
 //		try {
 
