@@ -16,8 +16,8 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 	Optional<Integer> findIdByUserName(@Param("email") String email);
 	
 	
-	@Query("SELECT id FROM User u WHERE u.email=:email")
-	Boolean findIdByEmail(@Param("email") String email);
+	@Query("SELECT email FROM User u WHERE u.email=:email")
+	String findIdByEmail(@Param("email") String email);
 
 	// findIdByUserName(@Param("email") String email);
 	
