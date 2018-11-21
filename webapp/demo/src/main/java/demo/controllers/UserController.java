@@ -445,12 +445,10 @@ public class UserController {
     public ResponseEntity resetPassword(@RequestParam("EmailId")String emailId){
 		//System.out.print("*****************" + emailId);
         statsDClient.increment("user.reset.password");
-	    
-// 	   User u=userRepository.findIdByEmailUser(emailId);
-//         System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"+u.getEmail());
-	    
-// 	     Optional<String> mail=userRepository.findIdByUserEmail(emailId);
-//         System.out.println("****************************"+mail+" ************************");
+        Optional<String> mail=userRepository.findIdByUserEmail(emailId);
+        String m=mail.get();
+        // List size
+        System.out.println("****************************"+m+" ************************");
 	    
         if(emailId.isEmpty()){
             return responseService.generateResponse(HttpStatus.UNAUTHORIZED,
