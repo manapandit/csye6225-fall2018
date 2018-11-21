@@ -446,8 +446,8 @@ public class UserController {
 		//System.out.print("*****************" + emailId);
         statsDClient.increment("user.reset.password");
 	    
-	   User u=userRepository.findIdByEmailUser(emailId);
-        System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"+u.getEmail());
+// 	   User u=userRepository.findIdByEmailUser(emailId);
+//         System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"+u.getEmail());
 	    
         if(emailId.isEmpty()){
             return responseService.generateResponse(HttpStatus.UNAUTHORIZED,
