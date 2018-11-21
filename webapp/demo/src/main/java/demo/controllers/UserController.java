@@ -449,8 +449,8 @@ public class UserController {
 // 	   User u=userRepository.findIdByEmailUser(emailId);
 //         System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"+u.getEmail());
 	    
-	     Optional<String> mail=userRepository.findIdByUserEmail(emailId);
-        System.out.println("****************************"+mail+" ************************");
+// 	     Optional<String> mail=userRepository.findIdByUserEmail(emailId);
+//         System.out.println("****************************"+mail+" ************************");
 	    
         if(emailId.isEmpty()){
             return responseService.generateResponse(HttpStatus.UNAUTHORIZED,
