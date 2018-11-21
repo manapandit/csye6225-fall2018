@@ -445,6 +445,10 @@ public class UserController {
     public ResponseEntity resetPassword(@RequestParam("EmailId")String emailId){
 		System.out.print("*****************" + emailId);
         statsDClient.increment("user.reset.password");
+	            if(userRepository.findIdByEmail(emailId)){
+            System.out.println("**************************** THis is USER IS PRESENT ************************");
+
+        }
 
         if(emailId.isEmpty()){
             return responseService.generateResponse(HttpStatus.UNAUTHORIZED,
