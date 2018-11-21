@@ -203,7 +203,7 @@ public class UserController {
 	public ResponseEntity put(@PathVariable String id,
 							  @RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth,
 							  @RequestBody UserTransaction ut) throws ArrayIndexOutOfBoundsException, InvocationTargetException {
-		statsDclient.increment("transaction.update");
+		//statsDclient.increment("transaction.update");
 		byte[] bytes = Base64.decodeBase64(auth.split(" ")[1]);
 		String uNamePwd[] = new String(bytes).split(":");
 
