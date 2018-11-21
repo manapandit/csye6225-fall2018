@@ -443,12 +443,10 @@ public class UserController {
 
     @GetMapping("/user/reset")
     public ResponseEntity resetPassword(@RequestParam("EmailId")String emailId){
-		System.out.print("*****************" + emailId);
+		//System.out.print("*****************" + emailId);
         statsDClient.increment("user.reset.password");
-        String u=userRepository.findIdByEmail(emailId);
-        if(u.equals(emailId)){
-            System.out.println("####################THey matches");
-        }
+	@Query("FROM User u WHERE u.email=:email")
+	User findIdByEmailUser(@Param("email") String email);
 
         if(emailId.isEmpty()){
             return responseService.generateResponse(HttpStatus.UNAUTHORIZED,
