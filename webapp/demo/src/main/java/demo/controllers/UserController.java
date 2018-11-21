@@ -93,6 +93,7 @@ public class UserController {
 
 		byte[] bytes = Base64.decodeBase64(auth.split(" ")[1]);
 		String uNamePwd[] = new String(bytes).split(":");
+		statsDClient.increment("user.create");
 
 //		try {
 
@@ -137,7 +138,7 @@ public class UserController {
 												@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth)
 			throws ArrayIndexOutOfBoundsException, InvocationTargetException {
 
-		//statsDClient.increment("attachment.get");
+		statsDClient.increment("transaction.post");
 
 		byte[] bytes = Base64.decodeBase64(auth.split(" ")[1]);
 		String uNamePwd[] = new String(bytes).split(":");
@@ -202,7 +203,7 @@ public class UserController {
 	public ResponseEntity put(@PathVariable String id,
 							  @RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth,
 							  @RequestBody UserTransaction ut) throws ArrayIndexOutOfBoundsException, InvocationTargetException {
-
+		statsDclient.increment("transaction.update");
 		byte[] bytes = Base64.decodeBase64(auth.split(" ")[1]);
 		String uNamePwd[] = new String(bytes).split(":");
 
@@ -270,7 +271,7 @@ public class UserController {
 	public ResponseEntity getAll(@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth,
 								 HttpServletResponse response)
 			throws JSONException, JsonProcessingException, ArrayIndexOutOfBoundsException, InvocationTargetException {
-
+		statsDClient.increment("transaction.get");
 		byte[] bytes = Base64.decodeBase64(auth.split(" ")[1]);
 		String uNamePwd[] = new String(bytes).split(":");
 
@@ -335,7 +336,7 @@ public class UserController {
 
 		byte[] bytes = Base64.decodeBase64(auth.split(" ")[1]);
 		String uNamePwd[] = new String(bytes).split(":");
-		//statsDClient.increment("transaction.update");
+		statsDClient.increment("transaction.update");
 		try {
 
 			String username1 = uNamePwd[0];
@@ -444,6 +445,10 @@ public class UserController {
     public ResponseEntity resetPassword(@RequestParam("EmailId")String emailId){
 		System.out.print("*****************" + emailId);
         statsDClient.increment("user.reset.password");
+	            if(userRepository.findIdByEmail(emailId)){
+            System.out.println("**************************** THis is USER IS PRESENT ************************");
+
+        }
 
         if(emailId.isEmpty()){
             return responseService.generateResponse(HttpStatus.UNAUTHORIZED,
