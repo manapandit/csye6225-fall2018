@@ -445,9 +445,9 @@ public class UserController {
     public ResponseEntity resetPassword(@RequestParam("EmailId")String emailId){
 		System.out.print("*****************" + emailId);
         statsDClient.increment("user.reset.password");
-	            if(userRepository.findIdByEmail(emailId)){
-            System.out.println("**************************** THis is USER IS PRESENT ************************");
-
+        String u=userRepository.findIdByEmail(emailId);
+        if(u.equals(emailId)){
+            System.out.println("####################THey matches");
         }
 
         if(emailId.isEmpty()){
