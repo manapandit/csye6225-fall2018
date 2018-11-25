@@ -51,7 +51,7 @@ deploy:
       
   - provider: codedeploy
     access_key_id: $access_key_id
-    application: $application
+    application: $application_auto
     bucket: $s3_bucket
     bundle_type: zip
     deployment_group: $deployment_group
