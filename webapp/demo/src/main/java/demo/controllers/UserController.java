@@ -61,7 +61,7 @@ public class UserController {
 		System.out.println("First Phase");
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 		LocalDateTime now = LocalDateTime.now();
-		JSONObject bodyObject = new JSONObject("{}");
+		JSONObject bodyObject = new JSONObject("{\"Response\":\"You are not logged in\"}");
 		HttpHeaders headers = new HttpHeaders();
 		byte[] bytes = Base64.decodeBase64(auth.split(" ")[1]);
 		String uNamePwd[] = new String(bytes).split(":");
@@ -179,7 +179,8 @@ public class UserController {
 						ut.setUser(u);
 						System.out.print("#####################################" + uuid);
 						userTransactionRepository.save(ut);
-						return new ResponseEntity("Authorized", HttpStatus.OK);
+						//return new ResponseEntity("Authorized", HttpStatus.OK);
+						return ResponseEntity.status(HttpStatus.OK).body(ut);
 					} else {
 						return new ResponseEntity("Not authorized", HttpStatus.UNAUTHORIZED);
 					}
@@ -240,9 +241,11 @@ public class UserController {
 							String c = ut.getCategory();
 							String dt = ut.getDate();
 							String m = ut.getMerchant();
-
+							//Added code
+							ut.setId(id);
 							userTransactionRepository.updateTransaction(id, user_id, d, a, c, dt, m);
-							return new ResponseEntity("Updated", HttpStatus.ACCEPTED);
+							//return new ResponseEntity("Updated", HttpStatus.ACCEPTED);
+							return ResponseEntity.status(HttpStatus.OK).body(ut);
 						} else {
 							return new ResponseEntity("Not authorized", HttpStatus.UNAUTHORIZED);
 						}
