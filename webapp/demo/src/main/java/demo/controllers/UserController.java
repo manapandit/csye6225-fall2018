@@ -61,7 +61,7 @@ public class UserController {
 		System.out.println("First Phase");
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 		LocalDateTime now = LocalDateTime.now();
-		JSONObject bodyObject = new JSONObject("{}");
+		JSONObject bodyObject = new JSONObject("{\"Response\":\"You are not logged in\"}");
 		HttpHeaders headers = new HttpHeaders();
 		byte[] bytes = Base64.decodeBase64(auth.split(" ")[1]);
 		String uNamePwd[] = new String(bytes).split(":");
@@ -93,6 +93,7 @@ public class UserController {
 
 		byte[] bytes = Base64.decodeBase64(auth.split(" ")[1]);
 		String uNamePwd[] = new String(bytes).split(":");
+		statsDClient.increment("user.create");
 
 //		try {
 
@@ -137,7 +138,7 @@ public class UserController {
 												@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth)
 			throws ArrayIndexOutOfBoundsException, InvocationTargetException {
 
-		//statsDClient.increment("attachment.get");
+		statsDClient.increment("transaction.post");
 
 		byte[] bytes = Base64.decodeBase64(auth.split(" ")[1]);
 		String uNamePwd[] = new String(bytes).split(":");
@@ -178,7 +179,8 @@ public class UserController {
 						ut.setUser(u);
 						System.out.print("#####################################" + uuid);
 						userTransactionRepository.save(ut);
-						return new ResponseEntity("Authorized", HttpStatus.OK);
+						//return new ResponseEntity("Authorized", HttpStatus.OK);
+						return ResponseEntity.status(HttpStatus.OK).body(ut);
 					} else {
 						return new ResponseEntity("Not authorized", HttpStatus.UNAUTHORIZED);
 					}
@@ -202,7 +204,7 @@ public class UserController {
 	public ResponseEntity put(@PathVariable String id,
 							  @RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth,
 							  @RequestBody UserTransaction ut) throws ArrayIndexOutOfBoundsException, InvocationTargetException {
-
+		//statsDclient.increment("transaction.update");
 		byte[] bytes = Base64.decodeBase64(auth.split(" ")[1]);
 		String uNamePwd[] = new String(bytes).split(":");
 
@@ -239,9 +241,11 @@ public class UserController {
 							String c = ut.getCategory();
 							String dt = ut.getDate();
 							String m = ut.getMerchant();
-
+							//Added code
+							ut.setId(id);
 							userTransactionRepository.updateTransaction(id, user_id, d, a, c, dt, m);
-							return new ResponseEntity("Updated", HttpStatus.ACCEPTED);
+							//return new ResponseEntity("Updated", HttpStatus.ACCEPTED);
+							return ResponseEntity.status(HttpStatus.OK).body(ut);
 						} else {
 							return new ResponseEntity("Not authorized", HttpStatus.UNAUTHORIZED);
 						}
@@ -270,7 +274,7 @@ public class UserController {
 	public ResponseEntity getAll(@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth,
 								 HttpServletResponse response)
 			throws JSONException, JsonProcessingException, ArrayIndexOutOfBoundsException, InvocationTargetException {
-
+		statsDClient.increment("transaction.get");
 		byte[] bytes = Base64.decodeBase64(auth.split(" ")[1]);
 		String uNamePwd[] = new String(bytes).split(":");
 
@@ -335,7 +339,7 @@ public class UserController {
 
 		byte[] bytes = Base64.decodeBase64(auth.split(" ")[1]);
 		String uNamePwd[] = new String(bytes).split(":");
-		//statsDClient.increment("transaction.update");
+		statsDClient.increment("transaction.update");
 		try {
 
 			String username1 = uNamePwd[0];
@@ -442,9 +446,13 @@ public class UserController {
 
     @GetMapping("/user/reset")
     public ResponseEntity resetPassword(@RequestParam("EmailId")String emailId){
-		System.out.print("*****************" + emailId);
+		//System.out.print("*****************" + emailId);
         statsDClient.increment("user.reset.password");
-
+//         Optional<String> mail=userRepository.findIdByUserEmail(emailId);
+//         String m=mail.get();
+//         // List size
+//         System.out.println("****************************"+m+" ************************");
+	    
         if(emailId.isEmpty()){
             return responseService.generateResponse(HttpStatus.UNAUTHORIZED,
                     "{\"Response\":\"Please enter email\"}");
