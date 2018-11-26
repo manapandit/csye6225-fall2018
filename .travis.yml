@@ -54,7 +54,7 @@ deploy:
     application: $application
     bucket: $s3_bucket
     bundle_type: zip
-    deployment_group: $deployment_group
+    deployment_group: $deployment_group_auto
     key: csye6225-web-app-$TRAVIS_JOB_NUMBER.zip
     region: us-east-1
     secret_access_key: $secret_access_key
