@@ -10,6 +10,10 @@
         "TravisUser": {
             "Description": "Travis-ci user",
             "Type": "String"
+        },
+        "AttachBucket": {
+            "Description": "Attachment bucket",
+            "Type": "String"
         }
     },
     "Resources": {
@@ -33,7 +37,8 @@
                                         "arn:aws:s3:::",
                                         {
                                             "Ref": "DeployBucket"
-                                        }
+                                        },
+                                        "/*"
                                     ]
                                 ]
                             }
@@ -67,7 +72,7 @@
                                 "codedeploy:GetApplicationRevision"
                             ],
                             "Resource": [
-                                "arn:aws:codedeploy:::application:CSYE6225CodeDeployApplication"
+                                "arn:aws:codedeploy:*:*:application:CSYE6225CodeDeployApplication"
                             ]
                         },
                         {
@@ -86,9 +91,9 @@
                                 "codedeploy:GetDeploymentConfig"
                             ],
                             "Resource": [
-                                "arn:aws:codedeploy:::deploymentconfig:CodeDeployDefault.OneAtATime",
-                                "arn:aws:codedeploy:::deploymentconfig:CodeDeployDefault.HalfAtATime",
-                                "arn:aws:codedeploy:::deploymentconfig:CodeDeployDefault.AllAtOnce"
+                                "arn:aws:codedeploy:*:*:deploymentconfig:CodeDeployDefault.OneAtATime",
+                                "arn:aws:codedeploy:*:*:deploymentconfig:CodeDeployDefault.HalfAtATime",
+                                "arn:aws:codedeploy:*:*:deploymentconfig:CodeDeployDefault.AllAtOnce"
                             ]
                         }
                     ]
@@ -155,19 +160,13 @@
                 "PolicyDocument": {
                     "Version": "2012-10-17",
                     "Statement": [
-                        {
+                        {   
+                            "Sid": "CodeToListBucket",
                             "Effect": "Allow",
                             "Action": [
-                                "s3:*"
+                                "s3:List*"
                             ],
-                            "Resource": {
-                                "Fn::Join": [
-                                    "",
-                                    [
-                                        "arn:aws:s3:::*"
-                                    ]
-                                ]
-                            }
+                            "Resource": "arn:aws:s3:::*"
                         },
                         {
                             "Effect": "Allow",
@@ -186,7 +185,27 @@
                                 "logs:CreateLogGroup"
                             ],
                             "Resource": "*"
-                        } 
+                        },
+                        {
+                            "Sid": "CodeToPutObjectInS3",
+                            "Effect": "Allow",
+                            "Action": [
+                                "s3:PutObject*",
+                                "s3:DeleteObject*"
+                            ],
+                            "Resource": {
+                                "Fn::Join": [
+                                    "",
+                                    [
+                                        "arn:aws:s3:::",
+                                        {
+                                            "Ref": "AttachBucket"
+                                        },
+                                        "/*"
+                                    ]
+                                ]
+                            }
+                        }
                     ]
                 },
                 "Roles": [
@@ -283,14 +302,15 @@
                                 {
                                     "Effect": "Allow",
                                     "Action": [
-                                        "logs:CreateLogGroup",
-                                        "logs:CreateLogStream",
+                                        "cloudwatch:PutMetricData",
+                                        "ec2:DescribeTags",
                                         "logs:PutLogEvents",
-                                        "logs:DescribeLogStreams"
+                                        "logs:DescribeLogStreams",
+                                        "logs:DescribeLogGroups",
+                                        "logs:CreateLogStream",
+                                        "logs:CreateLogGroup"
                                     ],
-                                    "Resource": [
-                                        "arn:aws:logs:::*"
-                                    ]
+                                    "Resource": "*"
                                 }
                             ]
                         }
@@ -349,7 +369,7 @@
                                         "logs:CreateLogStream",
                                         "logs:PutLogEvents"
                                     ],
-                                    "Resource": "arn:aws:logs:::*"
+                                    "Resource": "arn:aws:logs:*:*:*"
                                 },
                                 {
                                     "Effect": "Allow",
@@ -357,7 +377,7 @@
                                         "dynamodb:*"
                                     ],
                                     "Resource": [
-                                        "arn:aws:dynamodb:us-east-1::table/"
+                                        "arn:aws:dynamodb:us-east-1:*:table/*"
                                     ]
                                 }
                             ]
