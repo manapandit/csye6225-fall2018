@@ -1,4 +1,4 @@
-# csye6225-fall2018-repo-template
+# csye6225-fall2018-repo-template#
   
 ##### Jishnu Paduthol(paduthol.j@husky.neu.edu) 
 ##### Manali Pandit(pandit.m@husky.neu.edu)
@@ -11,7 +11,7 @@
 # Dependencies
 ##### 1 MySQL
 ##### 2 Maven 3
-##### 3 Bcrypt
+##### 3 Bcrypt Salt
 ##### 4 Spring-Boot-Starter-Security
 
 # Build and Deploying Application Locally and dev
