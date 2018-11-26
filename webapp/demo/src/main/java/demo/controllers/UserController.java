@@ -242,7 +242,6 @@ public class UserController {
 							String m = ut.getMerchant();
 							//Added code
 							ut.setId(id);
-							*****
 							userTransactionRepository.updateTransaction(id, user_id, d, a, c, dt, m);
 							//return new ResponseEntity("Updated", HttpStatus.ACCEPTED);
 							return ResponseEntity.status(HttpStatus.OK).body(ut);
