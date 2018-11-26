@@ -88,7 +88,7 @@ ParameterKey=mySubnetId2,ParameterValue=$subnetId2 ParameterKey=mySubnetId3,Para
 ParameterKey=mySubnetId5,ParameterValue=$subnetId5 ParameterKey=mySubnetId6,ParameterValue=$subnetId6 ParameterKey=SSHLocation,ParameterValue=0.0.0.0/0 \
 ParameterKey=hostedZoneName,ParameterValue=$hostedZoneName ParameterKey=myVPC,ParameterValue=$vpc_Id ParameterKey=S3Name,ParameterValue=$hostedZoneName.csye6225.com \
 ParameterKey=hostedZoneId,ParameterValue=$hostedZoneId ParameterKey=InsProfile,ParameterValue=$Profiler ParameterKey=hostedZoneId,ParameterValue=$hostedZoneId \
-ParameterKey=ec2Name,ParameterValue=$ec2Name ParameterKey=DBEndpoint,ParameterValue=$Database ParameterKey=Certificate,ParameterValue=$CertificateArn)
+ParameterKey=ec2Name,ParameterValue=$ec2Name ParameterKey=Certificate,ParameterValue=$CertificateArn)
 
 if [ $? -ne "0" ]
 then 
