@@ -237,7 +237,7 @@
           <stringProp name="HTTPSampler.port">443</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/demo/transaction/e22307bd-d40b-47ff-b8b8-8dd882bfa977/uploadFile</stringProp>
+          <stringProp name="HTTPSampler.path">/demo/transaction/${id}/uploadFile</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
