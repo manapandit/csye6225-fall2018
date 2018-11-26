@@ -61,7 +61,7 @@ public class UserController {
 		System.out.println("First Phase");
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 		LocalDateTime now = LocalDateTime.now();
-		JSONObject bodyObject = new JSONObject("{\"Response\":\"You are not logged in\"}");
+		JSONObject bodyObject = new JSONObject("{\"Response\":\" You are not logged in\"}");
 		HttpHeaders headers = new HttpHeaders();
 		byte[] bytes = Base64.decodeBase64(auth.split(" ")[1]);
 		String uNamePwd[] = new String(bytes).split(":");
