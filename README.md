@@ -32,7 +32,7 @@
 
 
 
-### Link to TravisCI build for the project
+## Link to TravisCI build for the project
 https://travis-ci.com/paduthol-jishnu/csye6225-fall2018
 https://travis-ci.com/sharmadhruv/csye6225-fall2018
 https://travis-ci.com/manapandit/csye6225-fall2018
