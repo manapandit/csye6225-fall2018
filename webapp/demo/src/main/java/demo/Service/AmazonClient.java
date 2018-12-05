@@ -49,7 +49,7 @@ public class AmazonClient {
 //        AWSCredentials credentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
 //        this.s3client = new AmazonS3Client(credentials);
 
-        s3client = AmazonS3ClientBuilder.standard()
+        this.s3client = AmazonS3ClientBuilder.standard()
                 .withRegion("us-east-1")
                 .withCredentials(new DefaultAWSCredentialsProviderChain())
                 .build();
@@ -66,6 +66,7 @@ public class AmazonClient {
 //                             System.out.println("#######################################################################&&&&"+bucketName);
 //                         }
 //                     }
+            System.out.println("????????????????????????????????????????????????????????????????");
             File file = convertMultiPartToFile(multipartFile);
             String fileName = generateFileName(multipartFile);
             fileUrl = endpointUrl + "/" + bucketName + "/" + fileName;
