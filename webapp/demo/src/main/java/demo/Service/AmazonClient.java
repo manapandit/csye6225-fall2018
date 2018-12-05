@@ -3,6 +3,7 @@ package demo.Service;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Properties;
+import java.util.List;
 
 @Service
 public class AmazonClient {
@@ -35,11 +37,11 @@ public class AmazonClient {
 //    private String accessKey;
 //    @Value("${amazonProperties.secretKey}")
 //    private String secretKey;
-    @Value("${amazonProperties.bucketName}")
+//     @Value("${amazonProperties.bucketName}")
     private String bucketName;
 
-    @Value("${amazonProperties.endpointUrl}")
-    private String endpointUrl;
+//     @Value("${amazonProperties.endpointUrl}")
+    private String endpointUrl="csye6225-spring2018.cjbqfbgljz1n.us-east-1.rds.amazonaws.com";
 
     @PostConstruct
     private void initializeAmazon() {
@@ -55,6 +57,13 @@ public class AmazonClient {
     public String uploadFile(MultipartFile multipartFile) {
         String fileUrl = "";
         try {
+           List<Bucket> bucketNames = s3client.listBuckets();
+                    for (Bucket b : bucketNames) {
+                        String bucketName = b.getName().toLowerCase();
+                        if (bucketName.matches("(csye6225-fall2018-)+[a-z0-9]+(.me.csye6225.com)")) {
+                            this.bucketName = b.getName();
+                        }
+                    }
             File file = convertMultiPartToFile(multipartFile);
             String fileName = generateFileName(multipartFile);
             fileUrl = endpointUrl + "/" + bucketName + "/" + fileName;
