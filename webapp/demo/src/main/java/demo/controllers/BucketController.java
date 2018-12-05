@@ -25,7 +25,6 @@ import java.util.Properties;
 import java.util.UUID;
 @Profile("Dev")
 @RestController
-@PropertySource("classpath:application.properties")
 @RequestMapping("/transaction/{id}")
 public class BucketController {
 
