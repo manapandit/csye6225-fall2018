@@ -42,7 +42,7 @@ public class AmazonClient {
     private String bucketName;
 
 //     @Value("${amazonProperties.endpointUrl}")
-    private String endpointUrl="csye6225-spring2018.cjbqfbgljz1n.us-east-1.rds.amazonaws.com";
+    private String endpointUrl="https://s3.us-east-1.amazonaws.com";
 
     @PostConstruct
     private void initializeAmazon() {
