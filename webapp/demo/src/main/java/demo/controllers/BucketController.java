@@ -23,7 +23,7 @@ import demo.Service.AmazonClient;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Properties;
 import java.util.UUID;
-//@Profile("Dev")
+@Profile("Dev")
 @RestController
 @PropertySource("classpath:application.properties")
 @RequestMapping("/transaction/{id}")
@@ -37,9 +37,9 @@ public class BucketController {
 //     @Value("${amazonProperties.endpointUrl}")
 //     private String endPointUrl;
 
-    @Autowired
-    Properties properties;
-    private String profile = System.getProperty("spring.profiles.active=Dev");
+//     @Autowired
+//     Properties properties;
+//     private String profile = System.getProperty("spring.profiles.active=Dev");
 
 
     @Autowired
