@@ -53,7 +53,7 @@ public class BucketController {
     }
 
     @PostMapping("/uploadFile")
-    public String uploadFile(@RequestPart(value = "file") MultipartFile file, @PathVariable String id,
+    public String uploadFile(@RequestParam(value = "file") MultipartFile file, @PathVariable String id,
                              @RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth)  {
 
 
@@ -76,7 +76,7 @@ public class BucketController {
 
 
     @DeleteMapping("/deleteFile/{id}")
-    public String deleteFile(@RequestPart(value = "url") String fileUrl,@PathVariable String id,@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth) {
+    public String deleteFile(@RequestParam(value = "url") String fileUrl,@PathVariable String id,@RequestHeader(value = "Authorization", defaultValue = "No Auth") String auth) {
         attachmentRepo.deleteRecieptBy(id);
         return this.amazonClient.deleteFileFromS3Bucket(fileUrl);
     }
