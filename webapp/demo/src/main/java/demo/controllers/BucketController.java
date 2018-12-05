@@ -23,7 +23,7 @@ import demo.Service.AmazonClient;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Properties;
 import java.util.UUID;
-@Profile("Dev")
+//@Profile("Dev")
 @RestController
 @PropertySource("classpath:application.properties")
 @RequestMapping("/transaction/{id}")
