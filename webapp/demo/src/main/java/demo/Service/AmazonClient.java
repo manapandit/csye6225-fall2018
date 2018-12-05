@@ -26,9 +26,9 @@ public class AmazonClient {
 
     private AmazonS3 s3client;
 
-//     @Autowired
-//     Properties properties;
-//     private String profile = System.getProperty("spring.profiles.active");
+    @Autowired
+    Properties properties;
+    private String profile = System.getProperty("spring.profiles.active=Dev");
 
     //@Value("${amazonProperties.endpointUrl}")
     //private String endpointUrl="https://s3.us-east-1.amazonaws.com";
