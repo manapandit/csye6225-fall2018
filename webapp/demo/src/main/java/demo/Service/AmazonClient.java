@@ -64,7 +64,7 @@ public class AmazonClient {
             List<Bucket> bucketNames = s3client.listBuckets();
                      for (Bucket b : bucketNames) {
                          String bucketName = b.getName().toLowerCase();
-                         if (bucketName.matches("(csye6225-fall2018-)+[a-z0-9]+(.me.csye6225.com)")) {
+                         if (bucketName.matches("(csye62250-fall2018-)+[a-z0-9]+(.me.csye6225.com)")) {
                              this.bucketName = b.getName();
                              System.out.println("#######################################################################&&&&"+bucketName);
                          }
