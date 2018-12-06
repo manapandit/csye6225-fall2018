@@ -74,6 +74,7 @@ public class AmazonClient {
             System.out.println("##################"+bucketName+"##########################");
             File file = convertMultiPartToFile(multipartFile);
             String fileName = generateFileName(multipartFile);
+
             fileUrl = endpointUrl + "/" + bucketName + "/" + fileName;
             uploadFileTos3bucket(fileName, file);
             file.delete();
@@ -84,7 +85,8 @@ public class AmazonClient {
     }
 
     private File convertMultiPartToFile(MultipartFile file) throws IOException {
-        File convFile = new File(file.getOriginalFilename());
+        String temp=System.getProperty("java.io.tmpdir") + "/" +file.getOriginalFilename();
+        File convFile = new File(temp);
         FileOutputStream fos = new FileOutputStream(convFile);
         fos.write(file.getBytes());
         fos.close();
