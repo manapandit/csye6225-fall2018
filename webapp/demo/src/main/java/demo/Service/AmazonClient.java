@@ -1,10 +1,10 @@
 package demo.Service;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.BasicAWSCredentials;
+
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
+
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
+
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
@@ -37,10 +37,10 @@ public class AmazonClient {
       private String endpointUrl;
     //@Value("${amazonProperties.bucketName}")
 //    private String bucketName="csye62250-fall2018-sharmadhr.me.csye6225.com";
-      @Value("${amazonProperties.accessKey}")
-      private String accessKey;
-      @Value("${amazonProperties.secretKey}")
-      private String secretKey;
+//      @Value("${amazonProperties.accessKey}")
+//      private String accessKey;
+//      @Value("${amazonProperties.secretKey}")
+//      private String secretKey;
       @Value("${amazonProperties.bucketName}")
       private String bucketName;
 
@@ -49,13 +49,13 @@ public class AmazonClient {
 
     @PostConstruct
     private void initializeAmazon() {
-        AWSCredentials credentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
-        this.s3client = new AmazonS3Client(credentials);
+//        AWSCredentials credentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
+//        this.s3client = new AmazonS3Client(credentials);
 
-//        this.s3client = AmazonS3ClientBuilder.standard()
-//                .withRegion("us-east-1")
-//                .withCredentials(new DefaultAWSCredentialsProviderChain())
-//                .build();
+        this.s3client = AmazonS3ClientBuilder.standard()
+                .withRegion("us-east-1")
+                .withCredentials(new DefaultAWSCredentialsProviderChain())
+                .build();
     }   
 
     public String uploadFile(MultipartFile multipartFile) {
@@ -70,6 +70,8 @@ public class AmazonClient {
 //                         }
 //                     }
             System.out.println("????????????????????????????????????????????????????????????????");
+            System.out.println("@@@@@@@@@@@@@@@@@@"+endpointUrl+"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+            System.out.println("##################"+bucketName+"##########################");
             File file = convertMultiPartToFile(multipartFile);
             String fileName = generateFileName(multipartFile);
             fileUrl = endpointUrl + "/" + bucketName + "/" + fileName;
