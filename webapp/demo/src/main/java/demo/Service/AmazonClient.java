@@ -41,8 +41,8 @@ public class AmazonClient {
 //      private String accessKey;
 //      @Value("${amazonProperties.secretKey}")
 //      private String secretKey;
-      @Value("${amazonProperties.bucketName}")
-      private String bucketName;
+//      @Value("${amazonProperties.bucketName}")
+        private String bucketName;
 
 //     @Value("${amazonProperties.endpointUrl}")
    // private String endpointUrl="https://s3.us-east-1.amazonaws.com";
@@ -61,14 +61,14 @@ public class AmazonClient {
     public String uploadFile(MultipartFile multipartFile) {
         String fileUrl = "";
         try {
-//            List<Bucket> bucketNames = s3client.listBuckets();
-//                     for (Bucket b : bucketNames) {
-//                         String bucketName = b.getName().toLowerCase();
-//                         if (bucketName.matches("(csye6225-fall2018-)+[a-z0-9]+(.me.csye6225.com)")) {
-//                             this.bucketName = b.getName();
-//                             System.out.println("#######################################################################&&&&"+bucketName);
-//                         }
-//                     }
+            List<Bucket> bucketNames = s3client.listBuckets();
+                     for (Bucket b : bucketNames) {
+                         String bucketName = b.getName().toLowerCase();
+                         if (bucketName.matches("(csye6225-fall2018-)+[a-z0-9]+(.me.csye6225.com)")) {
+                             this.bucketName = b.getName();
+                             System.out.println("#######################################################################&&&&"+bucketName);
+                         }
+                     }
             System.out.println("????????????????????????????????????????????????????????????????");
             System.out.println("@@@@@@@@@@@@@@@@@@"+endpointUrl+"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
             System.out.println("##################"+bucketName+"##########################");
