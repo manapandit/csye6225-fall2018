@@ -1,3 +1,6 @@
+# Designed and built fault tolerant web application hosted on cloud computing platform (Amazon Web Services) using IaaS, PaaS & SaaS services such as EC2, VPC, Route53, IAM, Lambda Serverless, RDS, DynamoDB and S3 object store
+# Implemented Continuous Delivery using GitHub, TravisCI and Amazon CodeDeploy
+
 # csye6225-fall2018-repo-template
   
 ##### Jishnu Paduthol(paduthol.j@husky.neu.edu) 
